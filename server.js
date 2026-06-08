@@ -10,15 +10,15 @@ const wss = new WebSocket.Server({ server });
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// KHO DỮ LIỆU PHIM VÀ GIỜ CHIẾU
+// KHO DỮ LIỆU PHIM CHIA TRẠNG THÁI (CẬP NHẬT PHIM SẮP CHIẾU)
 const movies = [
-    { id: 1, title: "Doctor Strange 2026", genre: "Hành Động" },
-    { id: 2, title: "Avatar: Thủy Đạo", genre: "Viễn Tưởng" }
+    { id: 1, title: "Doctor Strange 2026", genre: "Hành Động", status: "now_showing" },
+    { id: 2, title: "Avatar: Thủy Đạo", genre: "Viễn Tưởng", status: "now_showing" },
+    { id: 3, title: "Avengers: Secret Wars", genre: "Siêu Anh Hùng", status: "coming_soon" },
+    { id: 4, title: "Shrek 5 (Hoạt Hình)", genre: "Hài Hước/Gia Đình", status: "coming_soon" }
 ];
 
 const showtimes = ["14:30", "17:15", "19:45"];
-
-// Hệ thống quản lý sơ đồ ghế theo: [Tên_Phim][Giờ_Chiếu]
 let masterSeatStore = {};
 
 function initSeatMap() {
@@ -32,12 +32,14 @@ function initSeatMap() {
     return seatMap;
 }
 
-// Khởi tạo sơ đồ ghế trống cho tất cả các suất chiếu
+// Chỉ khởi tạo lịch chiếu cho phim ĐANG CHIẾU (Phim Sắp Chiếu sẽ không có lịch đặt vé)
 movies.forEach(m => {
-    masterSeatStore[m.title] = {};
-    showtimes.forEach(t => {
-        masterSeatStore[m.title][t] = initSeatMap();
-    });
+    if (m.status === "now_showing") {
+        masterSeatStore[m.title] = {};
+        showtimes.forEach(t => {
+            masterSeatStore[m.title][t] = initSeatMap();
+        });
+    }
 });
 
 function broadcast(type, data) {
@@ -47,7 +49,7 @@ function broadcast(type, data) {
     });
 }
 
-// Tự động giải phóng ghế 'holding' quá hạn 5 phút (Quét mỗi 2 giây)
+// Giải phóng ghế quá hạn giữ
 setInterval(() => {
     let hasChanges = false;
     const now = Date.now();
@@ -73,30 +75,26 @@ wss.on('connection', (ws) => {
     ws.send(JSON.stringify({ type: 'SYNC_DATA', data: { masterSeatStore, movies, showtimes } }));
 });
 
-// API 1: Khách hàng yêu cầu GIỮ GHẾ TẠM THỜI
+// API Giữ ghế
 app.post('/api/seats/hold', (req, res) => {
     const { movie, showtime, seats } = req.body;
     const currentSeats = masterSeatStore[movie]?.[showtime];
 
-    if (!currentSeats) return res.status(400).json({ success: false, message: "Suất chiếu không tồn tại!" });
+    if (!currentSeats) return res.status(400).json({ success: false, message: "Suất chiếu không tồn tại hoặc phim chưa mở bán!" });
 
-    // Kiểm tra xem có ghế nào đã bị chọn hoặc bán chưa
     const isConflict = seats.some(id => currentSeats[id] && currentSeats[id].status !== 'available');
     if (isConflict) {
         return res.status(400).json({ success: false, message: "Ghế bạn chọn vừa có người giữ hoặc đã bán!" });
     }
 
-    const expiresAt = Date.now() + 5 * 60 * 1000; // 5 phút giữ ghế
-
-    seats.forEach(id => {
-        currentSeats[id] = { status: 'holding', expiresAt };
-    });
+    const expiresAt = Date.now() + 5 * 60 * 1000;
+    seats.forEach(id => { currentSeats[id] = { status: 'holding', expiresAt }; });
 
     broadcast('SYNC_DATA', { masterSeatStore, movies, showtimes });
     res.json({ success: true, expiresAt });
 });
 
-// API 2: THANH TOÁN CHÍNH THỨC
+// API Checkout
 app.post('/api/seats/checkout', (req, res) => {
     const { movie, showtime, seats } = req.body;
     const currentSeats = masterSeatStore[movie]?.[showtime];
@@ -112,11 +110,7 @@ app.post('/api/seats/checkout', (req, res) => {
     const ticketId = 'CGV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
     broadcast('SYNC_DATA', { masterSeatStore, movies, showtimes });
 
-    res.json({
-        success: true,
-        ticketId,
-        qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticketId}`
-    });
+    res.json({ success: true, ticketId, qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticketId}` });
 });
 
 const PORT = 3000;
