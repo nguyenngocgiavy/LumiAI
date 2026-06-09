@@ -151,9 +151,10 @@
                 </div>
             </div>
 
-            <div class="countdown-timer" id="hold-timer">
-                ⚠️ Ghế của bạn đang được giữ tạm thời. Vui lòng hoàn tất thanh toán trong: <span id="timer-string">05:00</span>
-            </div>
+            <div class="countdown-timer" id="hold-timer" style="display: none; justify-content: space-between; align-items: center;">
+    <span>⚠️ Ghế của bạn đang được giữ tạm thời trong: <strong id="timer-string" style="font-size: 18px; color: red;">05:00</strong></span>
+    <button onclick="cancelCurrentTransaction()" style="background: #e71a0f; color: white; border: none; padding: 5px 15px; cursor: pointer; border-radius: 3px; font-weight: bold;">Hủy Giao Dịch</button>
+</div>
 
             <div class="section-title">3. Chọn Ghế Ngồi Phòng Chiếu</div>
             <div class="cinema-room">
@@ -170,23 +171,10 @@
                 </div>
             </div>
 
-            <div class="section-title">4. Chọn Tiện Ích Combo Bắp Nước</div>
-            <div class="fnb-container">
-                <div class="fnb-item">
-                    <div class="fnb-img">🍿</div>
-                    <div class="fnb-details">
-                        <div class="fnb-title">CGV Combo Thần Thánh</div>
-                        <div class="fnb-price">85,000 đ</div>
-                    </div>
-                    <div class="qty-counter">
-                        <button class="qty-btn" onclick="updateFnbQty(-1)">-</button>
-                        <span id="fnb-qty" style="font-weight:bold;">0</span>
-                        <button class="qty-btn" onclick="updateFnbQty(1)">+</button>
-                    </div>
+          <div class="section-title">4. Chọn Tiện Ích Combo Bắp Nước</div>
+            <div class="fnb-container" id="cgv-fnb-menu">
                 </div>
-            </div>
         </div>
-
         <!-- PANEL 4: TIN MỚI & ƯU ĐÃI -->
         <div id="panel-news" class="cgv-panel">
             <div class="section-title" style="justify-content: center; font-size: 22px; letter-spacing: 2px;">— TIN MỚI VÀ ƯU ĐÃI —</div>
@@ -482,7 +470,13 @@
 <script>
     let ws = new WebSocket('ws://127.0.0.1:3000');
     let serverData = { masterSeatStore: {}, movies: [], showtimes: [] };
-    
+    let fnbMenu = [
+    { id: 'fnb1', name: 'CGV Combo Thần Thánh', price: 85000, icon: '🍿', qty: 0 },
+    { id: 'fnb2', name: 'My Combo (1 Bắp + 1 Nước)', price: 65000, icon: '🥤', qty: 0 },
+    { id: 'fnb3', name: 'Snack Khoai Tây Phô Mai', price: 35000, icon: '🍟', qty: 0 }
+];
+let appliedVoucherDiscount = 0; // % giảm giá
+let userPastInvoices = []; // Mảng lưu lịch sử giao dịch
     let selectedSeats = [];
     let selectedShowtime = "";
     let currentMovieFilter = "now_showing";
@@ -493,11 +487,14 @@
     let isUserLoggedInState = false;
     let cgvNavigationHistory = ['panel-movies']; 
     let activeSearchKeyword = ""; // Lưu từ khóa tìm kiếm phim thực tế
+    let selectedDateStr = "";
 
     window.addEventListener('DOMContentLoaded', () => {
         const daySelect = document.getElementById('reg-birth-day');
         const monthSelect = document.getElementById('reg-birth-month');
         const yearSelect = document.getElementById('reg-birth-year');
+        generateCgvDateSlider();
+        renderFnbMenu();
         if (daySelect && monthSelect && yearSelect) {
             for (let i = 1; i <= 31; i++) { daySelect.innerHTML += `<option value="${i}">${i}</option>`; }
             for (let i = 1; i <= 12; i++) { monthSelect.innerHTML += `<option value="${i}">Tháng ${i}</option>`; }
@@ -547,7 +544,42 @@
 
     function openAuthModal() { document.getElementById('auth-modal').classList.add('open'); generateNewLoginCaptcha(); generateNewRegisterCaptcha(); }
     function closeAuthModal() { document.getElementById('auth-modal').classList.remove('open'); }
+    function renderFnbMenu() {
+    const container = document.getElementById('cgv-fnb-menu');
+    if (!container) return;
+    container.innerHTML = '';
+    fnbMenu.forEach((item, index) => {
+        container.innerHTML += `
+            <div class="fnb-item">
+                <div class="fnb-img">${item.icon}</div>
+                <div class="fnb-details">
+                    <div class="fnb-title">${item.name}</div>
+                    <div class="fnb-price">${item.price.toLocaleString('vi-VN')} đ</div>
+                </div>
+                <div class="qty-counter">
+                    <button class="qty-btn" onclick="updateComboQty(${index}, -1)">-</button>
+                    <span style="font-weight:bold; width: 20px; text-align: center;">${item.qty}</span>
+                    <button class="qty-btn" onclick="updateComboQty(${index}, 1)">+</button>
+                </div>
+            </div>
+        `;
+    });
+}
 
+function updateComboQty(index, change) {
+    if (isHoldingState && document.getElementById('btn-main-action').innerText === "Thanh Toán Ngay") {
+        fnbMenu[index].qty += change;
+        if (fnbMenu[index].qty < 0) fnbMenu[index].qty = 0;
+        
+        let totalFnbItems = fnbMenu.reduce((sum, item) => sum + item.qty, 0);
+        document.getElementById('sum-fnb').innerText = totalFnbItems + " Combo";
+        
+        renderFnbMenu();
+        calculateCgvCart();
+    } else {
+        alert("Vui lòng chọn ghế và Giữ Ghế trước khi mua bắp nước!");
+    }
+}
     function toggleAuthTab(type) {
         document.getElementById('tab-login-btn').classList.remove('active');
         document.getElementById('tab-register-btn').classList.remove('active');
@@ -562,7 +594,169 @@
             document.getElementById('form-register-panel').classList.add('active');
         }
     }
+function openCheckoutReview() {
+    const currentMovie = document.getElementById('cgv-combo-movie').value;
+    let fnbHtml = fnbMenu.filter(i => i.qty > 0).map(i => `<p>+ ${i.name} (x${i.qty}): ${(i.price * i.qty).toLocaleString('vi-VN')} đ</p>`).join('');
+    
+    document.getElementById('review-invoice-content').innerHTML = `
+        <p><strong>Phim:</strong> ${currentMovie}</p>
+        <p><strong>Suất chiếu:</strong> ${selectedDateStr} | ${selectedShowtime}</p>
+        <p><strong>Ghế:</strong> ${selectedSeats.join(', ')}</p>
+        <p><strong>Bắp nước:</strong></p>
+        ${fnbHtml || '<p>Không có</p>'}
+        <hr style="margin: 10px 0;">
+        <p><strong>Tổng cộng (Chưa giảm):</strong> ${currentPriceTotal.toLocaleString('vi-VN')} đ</p>
+    `;
+    
+    appliedVoucherDiscount = 0; // reset voucher
+    document.getElementById('voucher-input').value = '';
+    document.getElementById('review-final-total').innerText = currentPriceTotal.toLocaleString('vi-VN') + " đ";
+    document.getElementById('checkout-review-modal').classList.add('open');
+}
 
+function closeCheckoutReview() {
+    document.getElementById('checkout-review-modal').classList.remove('open');
+    appliedVoucherDiscount = 0; calculateCgvCart();
+}
+
+function applyVoucher() {
+    const code = document.getElementById('voucher-input').value.trim().toUpperCase();
+    if (code === 'CGV20') {
+        appliedVoucherDiscount = 0.2;
+        alert("Áp dụng thành công Voucher giảm 20%!");
+    } else {
+        appliedVoucherDiscount = 0;
+        alert("Mã Voucher không hợp lệ hoặc đã hết hạn!");
+    }
+    const finalTotal = currentPriceTotal * (1 - appliedVoucherDiscount);
+    document.getElementById('review-final-total').innerText = finalTotal.toLocaleString('vi-VN') + " đ";
+    calculateCgvCart();
+}
+
+function processToPaymentGateway() {
+    closeCheckoutReview(); // Đóng popup rà soát hóa đơn
+    
+    // Tính toán lại giá tiền cuối cùng
+    const finalTotal = currentPriceTotal * (1 - appliedVoucherDiscount);
+    document.getElementById('qr-total-price').innerText = finalTotal.toLocaleString('vi-VN') + " đ";
+    
+    // Sinh mã QR giả lập chứa tên hóa đơn và số tiền
+    const qrData = `Thanh toan ve CGV - So tien: ${finalTotal} VND`;
+    document.getElementById('bank-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
+    
+    // Mở popup QR lên
+    document.getElementById('payment-redirect-modal').classList.add('open');
+}
+
+function closePaymentModal() {
+    document.getElementById('payment-redirect-modal').classList.remove('open');
+}
+
+function executeFinalCheckout() {
+    const currentMovie = document.getElementById('cgv-combo-movie').value;
+    const currentEmail = document.getElementById('profile-field-email') ? document.getElementById('profile-field-email').value : "test@cgv.vn";
+
+    fetch('/api/seats/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ movie: currentMovie, showtime: selectedShowtime, seats: selectedSeats, email: currentEmail })
+    }).then(res => res.json()).then(data => {
+        document.getElementById('payment-redirect-modal').classList.remove('open');
+        if(data.success) {
+            // LƯU LỊCH SỬ VÀO MẢNG
+            const invoiceObj = {
+                id: data.ticketId,
+                movie: currentMovie,
+                date: selectedDateStr,
+                time: selectedShowtime,
+                seats: [...selectedSeats],
+                fnb: fnbMenu.filter(i => i.qty > 0).map(i => ({...i})),
+                total: currentPriceTotal * (1 - appliedVoucherDiscount),
+                status: 'Đã thanh toán (VNPAY)'
+            };
+            userPastInvoices.unshift(invoiceObj); // Đẩy lên đầu mảng
+            
+            alert("Giao dịch thành công! Vé đã được xuất.");
+            resetHoldState(); 
+            selectedSeats = []; 
+            fnbMenu.forEach(i => i.qty = 0); renderFnbMenu(); calculateCgvCart();
+            
+            renderTransactionHistory(); // Cập nhật màn hình Lịch sử
+            switchCgvTab('panel-profile'); switchProfileSubTab('lichsu');
+        }
+    });
+}
+
+function cancelCurrentTransaction() {
+    if(confirm("Bạn có chắc chắn muốn hủy giao dịch và bỏ giữ các ghế này không?")) {
+        const currentMovie = document.getElementById('cgv-combo-movie').value;
+        fetch('/api/seats/cancel', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ movie: currentMovie, showtime: selectedShowtime, seats: selectedSeats })
+        }).then(() => {
+            resetHoldState();
+            selectedSeats = [];
+            
+            // Đưa toàn bộ số lượng bắp nước trong mảng về 0
+            fnbMenu.forEach(i => i.qty = 0); 
+            
+            // Vẽ lại giao diện bắp nước
+            renderFnbMenu(); 
+            
+            // Hàm này bây giờ sẽ tự động tính ra 0 Combo và render xuống thanh đen
+            calculateCgvCart(); 
+            
+            renderCgvInterface();
+            alert("Đã hủy giao dịch và giải phóng ghế!");
+        });
+    }
+}
+function renderTransactionHistory() {
+    const historyZone = document.getElementById('cgv-invoice-zone');
+    if (userPastInvoices.length === 0) {
+        historyZone.innerHTML = '<p style="color:#777; font-size: 13px;">Bạn chưa thực hiện giao dịch mua vé trực tuyến nào gần đây.</p>';
+        return;
+    }
+    
+    historyZone.innerHTML = '';
+    userPastInvoices.forEach(inv => {
+        historyZone.innerHTML += `
+            <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; background: white; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="margin: 0 0 5px 0; color: var(--cgv-red);">${inv.movie}</h4>
+                    <p style="margin: 0; font-size: 13px; color: #555;">Mã ĐH: <b>${inv.id}</b> | Ngày: ${inv.date} | Trạng thái: <span style="color: green;">${inv.status}</span></p>
+                </div>
+                <button onclick="viewHistoryDetail('${inv.id}')" style="background: var(--cgv-gold); border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; border-radius: 4px;">Xem Chi Tiết</button>
+            </div>
+        `;
+    });
+}
+
+function viewHistoryDetail(invoiceId) {
+    const inv = userPastInvoices.find(i => i.id === invoiceId);
+    if(!inv) return;
+    
+    let fnbHtml = inv.fnb.map(i => `<li>${i.name} x${i.qty}</li>`).join('');
+    
+    document.getElementById('history-detail-content').innerHTML = `
+        <p><strong>Mã vé:</strong> <span style="color:red;">${inv.id}</span></p>
+        <p><strong>Phim:</strong> ${inv.movie}</p>
+        <p><strong>Suất:</strong> ${inv.time} ngày ${inv.date}</p>
+        <hr style="margin: 10px 0;">
+        <p><strong>🎟️ Vé ghế ngồi:</strong> ${inv.seats.join(', ')}</p>
+        <p><strong>🍿 Bắp nước:</strong></p>
+        <ul>${fnbHtml || '<li>Không có</li>'}</ul>
+        <hr style="margin: 10px 0;">
+        <p style="font-size: 16px; text-align: right;"><strong>Thành tiền: <span style="color:red;">${inv.total.toLocaleString('vi-VN')} đ</span></strong></p>
+    `;
+    
+    document.getElementById('history-detail-modal').classList.add('open');
+}
+
+function closeHistoryDetailModal() {
+    document.getElementById('history-detail-modal').classList.remove('open');
+}
     function viewMovieDetailText(title, genre) {
         document.getElementById('detail-movie-title').innerText = title;
         document.getElementById('detail-movie-genre').innerText = genre;
@@ -711,17 +905,32 @@
     }
 
     function calculateCgvCart() {
-        document.getElementById('sum-seats').innerText = selectedSeats.join(', ') || 'Chưa chọn';
-        let total = 0;
-        selectedSeats.forEach(id => {
-            if(id.startsWith('C')) total += 110000;
-            else if(id.startsWith('D')) total += 250000;
-            else total += 90000;
-        });
-        total += (fnbQty * 85000); currentPriceTotal = total;
-        document.getElementById('sum-total').innerText = total.toLocaleString('vi-VN') + " đ";
-    }
+    document.getElementById('sum-seats').innerText = selectedSeats.join(', ') || 'Chưa chọn';
+    
+    let total = 0;
+    let totalFnbItems = 0; // Thêm biến đếm tổng số lượng Combo
 
+    // Tính tiền vé
+    selectedSeats.forEach(id => {
+        if(id.startsWith('C')) total += 110000;
+        else if(id.startsWith('D')) total += 250000;
+        else total += 90000;
+    });
+    
+    // Tính tiền và đếm số lượng bắp nước
+    fnbMenu.forEach(item => {
+        total += (item.qty * item.price);
+        totalFnbItems += item.qty; // Cộng dồn số lượng combo
+    });
+    
+    // CẬP NHẬT GIAO DIỆN CHỮ "X COMBO" XUỐNG THANH ĐEN
+    document.getElementById('sum-fnb').innerText = totalFnbItems + " Combo";
+    
+    currentPriceTotal = total;
+    let finalTotal = currentPriceTotal * (1 - appliedVoucherDiscount);
+    
+    document.getElementById('sum-total').innerText = finalTotal.toLocaleString('vi-VN') + " đ";
+}
    function switchCgvTab(panelId, filterType = 'now_showing') {
     if (cgvNavigationHistory[cgvNavigationHistory.length - 1] !== panelId) { cgvNavigationHistory.push(panelId); }
     document.getElementById('bc-back-btn').style.display = (cgvNavigationHistory.length > 1) ? 'inline-block' : 'none';
@@ -860,51 +1069,29 @@
     }
 
     function handleMainAction() {
-        if(selectedSeats.length === 0) return alert('Vui lòng chọn ghế trước!');
-        const currentMovie = document.getElementById('cgv-combo-movie').value;
-        const currentEmail = document.getElementById('profile-field-email') ? document.getElementById('profile-field-email').value : "hoang2026@gmail.com";
+    if(selectedSeats.length === 0) return alert('Vui lòng chọn ghế trước!');
+    const currentMovie = document.getElementById('cgv-combo-movie').value;
 
-        if (!isHoldingState) {
-            fetch('/api/seats/hold', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ movie: currentMovie, showtime: selectedShowtime, seats: selectedSeats })
-            }).then(res => res.json()).then(data => {
-                if(data.success) {
-                    isHoldingState = true;
-                    document.getElementById('btn-main-action').innerText = "Thanh Toán Ngay";
-                    document.getElementById('btn-main-action').style.background = "#10B981";
-                    document.getElementById('hold-timer').style.display = "block";
-                    startCountdown(data.expiresAt);
-                } else { alert(data.message); }
-            });
-        } else {
-            fetch('/api/seats/checkout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ movie: currentMovie, showtime: selectedShowtime, seats: selectedSeats, email: currentEmail })
-            }).then(res => res.json()).then(data => {
-                if(data.success) {
-                    clearInterval(timerInterval);
-                    document.getElementById('hold-timer').style.display = "none";
-                    const invoiceZone = document.getElementById('cgv-invoice-zone');
-                    invoiceZone.innerHTML = `
-                        <div class="invoice-card" style="border: 2px dashed var(--cgv-gold); padding:20px; background:#fffdf9;">
-        <div style="font-size: 20px; font-weight:900; color:#e71a0f; text-align:center;">CGV E-TICKET WALLET</div>
-        <div style="text-align:center;"><img src="${data.qrCodeUrl}" style="margin:10px 0;"></div>
-        <h3>MÃ ĐẶT VÉ: ${data.ticketId}</h3>
-        <p>Phim: <b>${currentMovie}</b> | Ngày chiếu: <b style="color:var(--cgv-red);">${selectedDateStr}</b> | Suất: <b>${selectedShowtime}</b></p>
-        <p>Ghế: ${selectedSeats.join(', ')}</p>
-    </div>
-                    `;
-                    resetHoldState(); selectedSeats = []; fnbQty = 0;
-                    document.getElementById('fnb-qty').innerText = "0"; calculateCgvCart();
-                    switchCgvTab('panel-profile');
-                    switchProfileSubTab('lichsu');
-                }
-            });
-        }
+    if (!isHoldingState) {
+        // LUỒNG 1: GỬI YÊU CẦU GIỮ GHẾ
+        fetch('/api/seats/hold', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ movie: currentMovie, showtime: selectedShowtime, seats: selectedSeats })
+        }).then(res => res.json()).then(data => {
+            if(data.success) {
+                isHoldingState = true;
+                document.getElementById('btn-main-action').innerText = "Thanh Toán Ngay";
+                document.getElementById('btn-main-action').style.background = "#10B981";
+                document.getElementById('hold-timer').style.display = "flex";
+                startCountdown(data.expiresAt);
+            } else { alert(data.message); }
+        });
+    } else {
+        // LUỒNG 2: MỞ POPUP REVIEW HÓA ĐƠN TRƯỚC KHI THANH TOÁN
+        openCheckoutReview();
     }
+}
 function generateCgvDateSlider() {
     const container = document.getElementById('cgv-dynamic-date-slider');
     if (!container) return;
@@ -912,8 +1099,8 @@ function generateCgvDateSlider() {
 
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     
-    // Tạo mốc thời gian thực tại thời điểm năm 2026
-    const now = new Date(2026, 5, 8); // Tháng 6 (Index bắt đầu từ 0 nên 5 tức là tháng 6)
+    // Khởi tạo ngày bắt đầu thực tế (Tháng 5 trong code là tháng 6 thực tế vì index từ 0)
+    const now = new Date(2026, 5, 8); 
 
     for (let i = 0; i < 30; i++) {
         const targetDate = new Date(2026, 5, 8);
@@ -924,7 +1111,7 @@ function generateCgvDateSlider() {
         const dayName = daysOfWeek[targetDate.getDay()];
         const fullDateId = `2026-${month}-${dateNum}`;
 
-        // Đặt ngày đầu tiên (08) làm mặc định
+        // Đặt ngày đầu tiên làm mặc định nếu chưa chọn
         if (i === 0 && !selectedDateStr) {
             selectedDateStr = fullDateId;
         }
@@ -988,6 +1175,56 @@ function generateCgvDateSlider() {
         document.getElementById('btn-save-profile').style.display = 'none';
         alert("Cập nhật thông tin tài khoản mới thành công!");
     }
+    
 </script>
+<div class="cgv-modal-overlay" id="checkout-review-modal">
+        <div class="cgv-auth-split-box" style="width: 500px; flex-direction: column; padding: 25px; background: white;">
+            <h3 style="border-bottom: 2px solid #222; padding-bottom: 10px; color: #e71a0f;">RÀ SOÁT HÓA ĐƠN</h3>
+            <div id="review-invoice-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 15px;"></div>
+            
+            <div style="background: #f4f2ec; padding: 15px; margin-bottom: 15px; border: 1px dashed #ccc;">
+                <strong>Mã Voucher (Nhập CGV20 để giảm 20%):</strong>
+                <div style="display: flex; gap: 10px; margin-top: 5px;">
+                    <input type="text" id="voucher-input" class="cgv-input-text" style="flex:1;" placeholder="Nhập mã giảm giá">
+                    <button onclick="applyVoucher()" class="btn-cgv-submit" style="width: auto;">ÁP DỤNG</button>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 20px;">
+                <span>TỔNG TIỀN THANH TOÁN:</span>
+                <span id="review-final-total" style="color: #e71a0f;">0 đ</span>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-cgv-submit" style="background: #777;" onclick="closeCheckoutReview()">QUAY LẠI</button>
+                <button class="btn-cgv-submit" onclick="processToPaymentGateway()">XÁC NHẬN CHUYỂN KHOẢN</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cgv-modal-overlay" id="payment-redirect-modal">
+        <div style="background: white; padding: 30px; text-align: center; border-radius: 8px; border: 2px solid #0066cc; width: 400px; position: relative;">
+            <div class="cgv-modal-close" onclick="closePaymentModal()" style="color: #333; top: 10px; right: 15px;">✕</div>
+            <h2 style="color: #0066cc; margin-top: 0; margin-bottom: 5px;">Thanh Toán VNPAY-QR</h2>
+            <p style="font-size: 13px; color: #555; margin-bottom: 15px;">Quét mã QR bằng ứng dụng ngân hàng để thanh toán</p>
+            
+            <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; display: inline-block; background: #f9f9f9;">
+                <img id="bank-qr-img" src="" alt="QR Code" style="width: 200px; height: 200px; border: 1px solid #ccc; display: block; margin: 0 auto;">
+                <div style="margin-top: 15px; font-size: 20px; font-weight: bold; color: #e71a0f;" id="qr-total-price">0 đ</div>
+            </div>
+            
+            <p style="font-size: 13px; color: #333; margin-top: 15px;">Trạng thái: <span style="color: #f57c00; font-weight: bold;">Đang chờ người dùng quét mã...</span></p>
+            
+            <button class="btn-cgv-submit" style="margin-top: 15px; background: #10B981;" onclick="executeFinalCheckout()">ĐÃ CHUYỂN KHOẢN THÀNH CÔNG</button>
+        </div>
+    </div>
+
+    <div class="cgv-modal-overlay" id="history-detail-modal">
+        <div class="cgv-auth-split-box" style="width: 450px; flex-direction: column; padding: 25px; background: #fdfcf7;">
+            <div class="cgv-modal-close" onclick="closeHistoryDetailModal()">✕</div>
+            <h3 style="color: #222; text-align: center;">CHI TIẾT HÓA ĐƠN CŨ</h3>
+            <div id="history-detail-content" style="background: white; padding: 15px; border: 1px solid #ddd; margin-top: 15px;"></div>
+        </div>
+    </div>
 </body>
 </html>
