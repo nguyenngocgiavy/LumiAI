@@ -89,12 +89,10 @@
                 <span class="tab-title-sub" id="tab-title-coming" onclick="switchMovieFilterTab('coming_soon')">PHIM SẮP CHIẾU</span>
             </div>
 
-            <div class="cgv-search-bar-container">
-                <span class="search-title-lbl">Tìm Kiếm Phim Nhanh:</span>
-                <input type="text" id="movie-search-input" class="cgv-search-input" placeholder="Nhập tên phim hoặc thể loại bạn muốn tìm kiếm..." oninput="executeMovieRealTimeSearch()">
-            </div>
-            
-            <div class="cgv-movie-grid-spec" id="cgv-movie-list"></div>
+           <div class="cgv-search-bar-container">
+    <span class="search-title-lbl">Tìm Kiếm Phim Nhanh:</span>
+    <input type="text" id="movie-search-input" class="cgv-search-input" placeholder="Nhập tên phim hoặc thể loại bạn muốn tìm kiếm..." oninput="executeMovieRealTimeSearch()" autocomplete="new-password">
+</div> <div class="cgv-movie-grid-spec" id="cgv-movie-list"></div>
 
             <div style="display: flex; align-items: center; justify-content: center; margin: 50px auto 20px auto; width: 100%;">
                 <div style="flex: 1; height: 2px; background: linear-gradient(to left, #222, transparent);"></div>
@@ -662,11 +660,7 @@
     </div> 
 
     <footer style="background-color: #fdfcf7; border-top: 2px solid #222; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; width: 100%;">
-        <div style="border-bottom: 1px solid #ddd; padding: 15px 0; text-align: center; background: #fff;">
-            <div style="width: 100%; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-around; font-size: 11px; font-weight: bold; color: #555; flex-wrap: wrap; gap: 10px; padding: 0 20px; box-sizing: border-box;">
-                <span>4DX</span> l <span>IMAX</span> l <span>STARIUM</span> l <span>GOLD CLASS</span> l <span>L'AMOUR</span> l <span>SWEETBOX</span> l <span>PREMIUM CINEMA</span> l <span>SCREENX</span> l <span>CINE & FORÊT</span> l <span>CINE & LIVING ROOM</span> l <span>CINE & SUITE</span>
-            </div>
-        </div>
+       
         
         <div style="width: 100%; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; padding: 40px 20px; box-sizing: border-box; text-align: left; background-color: #fdfcf7;">
             <div>
@@ -734,13 +728,13 @@
                 
                 <div class="cgv-auth-content auth-form-panel active" id="form-login-panel">
                     <div class="cgv-form-group">
-                        <label>Email hoặc số điện thoại</label>
-                        <input type="text" id="auth-username" class="cgv-input-text" placeholder="nguyenngocgiavy1812@gmail.com">
-                    </div>
-                    <div class="cgv-form-group">
-                        <label>Mật khẩu</label>
-                        <input type="password" id="auth-password" class="cgv-input-text" placeholder=".........">
-                    </div>
+    <label>Email hoặc số điện thoại</label>
+    <input type="text" id="auth-username" class="cgv-input-text" placeholder="Nhập email hoặc số điện thoại" autocomplete="off">
+</div>
+<div class="cgv-form-group">
+    <label>Mật khẩu</label>
+    <input type="password" id="auth-password" class="cgv-input-text" placeholder="Nhập mật khẩu" autocomplete="new-password">
+</div>
                     <div class="cgv-form-group">
                         <label>Vui lòng nhập ký tự bên dưới <span>*</span></label>
                         <div class="captcha-row">
@@ -807,26 +801,34 @@
         </div>
     </div>
 
-    <div class="cgv-modal-overlay" id="forgot-modal">
+   <div class="cgv-modal-overlay" id="forgot-modal">
         <div class="cgv-forgot-box">
-            <div class="cgv-forgot-header">Bạn muốn tìm lại mật khẩu?</div>
+            <div class="cgv-forgot-header-container">
+                <div class="cgv-forgot-header-tab">Bạn muốn tìm lại mật khẩu?</div>
+            </div>
+            
             <div class="cgv-forgot-body">
                 <div class="cgv-form-group">
                     <label>Email hoặc số điện thoại <span>*</span></label>
-                    <input type="text" id="forgot-email-input" class="cgv-input-text" style="border: 1px solid #000;" placeholder="Email hoặc số điện thoại">
+                    <input type="text" id="forgot-email-input" class="cgv-input-text" style="border: 1px solid #222;" placeholder="">
                 </div>
+                
                 <div class="cgv-form-group" style="margin-top: 20px;">
                     <label>Vui lòng nhập ký tự bên dưới <span>*</span></label>
                     <div class="captcha-row">
-                        <input type="text" id="forgot-captcha-input" class="cgv-input-text cgv-forgot-captcha-box" style="width: 180px;" placeholder="Nhập ký tự">
-                        <div class="captcha-img-box" style="flex-grow: 1; justify-content: space-between;">
-                            <span class="captcha-text" id="forgot-captcha-text" style="letter-spacing: 3px; font-style: italic;">6IYQVX</span>
-                            <div class="captcha-refresh" onclick="generateForgotCaptcha()">↻</div>
+                        <input type="text" id="forgot-captcha-input" class="cgv-input-text cgv-forgot-captcha-box" style="width: 180px; border: 1px solid #222;" placeholder="">
+                        <div class="captcha-img-box" style="flex-grow: 1; justify-content: space-between; border: 1px solid #ccc; background: #fff;">
+                            <span class="captcha-text" id="forgot-captcha-text" style="letter-spacing: 3px; font-family: 'Times New Roman', serif; font-style: italic; font-size: 26px; color: #111;">PM7MMI</span>
+                            <div class="captcha-refresh" onclick="generateForgotCaptcha()" style="color: #d38b4d; font-size: 24px;">↻</div>
                         </div>
                     </div>
                 </div>
-                <button class="btn-cgv-forgot-submit" onclick="executeForgotRequestSubmit()">GỬI</button>
-                <div><a href="#" class="cgv-forgot-back-link" onclick="closeForgotModal()">&laquo; Quay lại trang đăng nhập</a></div>
+                
+                <button class="btn-cgv-forgot-submit" onclick="executeForgotRequestSubmit()">GỞI </button>
+                
+                <div style="margin-top: 25px;">
+                    <a href="#" class="cgv-forgot-back-link" onclick="closeForgotModal(); openAuthModal(); toggleAuthTab('login');">&laquo; Quay lại trang đăng nhập</a>
+                </div>
             </div>
         </div>
     </div>
@@ -964,7 +966,40 @@
             renderCgvInterface();
         }
     };
+function openForgotModal() {
+        document.getElementById('forgot-modal').classList.add('open');
+        generateForgotCaptcha(); // Sinh mã captcha mới cho form này
+    }
 
+    // Hàm đóng form quên mật khẩu
+    function closeForgotModal() {
+        document.getElementById('forgot-modal').classList.remove('open');
+    }
+
+    // Hàm xử lý khi bấm nút "Gửi yêu cầu"
+    function executeForgotRequestSubmit() {
+        const emailInput = document.getElementById('forgot-email-input').value.trim();
+        const captchaInput = document.getElementById('forgot-captcha-input').value.trim();
+        const currentCaptchaText = document.getElementById('forgot-captcha-text').innerText;
+
+        if (!emailInput) {
+            return alert("Vui lòng nhập địa chỉ email hoặc số điện thoại!");
+        }
+        
+        if (captchaInput.toUpperCase() !== currentCaptchaText.toUpperCase()) {
+            return alert("Mã xác nhận bảo mật không chính xác!");
+        }
+
+        // Mô phỏng gửi yêu cầu thành công
+        alert("Yêu cầu khôi phục mật khẩu đã được gửi đến: " + emailInput + ". Vui lòng kiểm tra hộp thư!");
+        
+        // Đóng form quên mật khẩu và xóa dữ liệu đã nhập
+        document.getElementById('forgot-email-input').value = "";
+        document.getElementById('forgot-captcha-input').value = "";
+        closeForgotModal();
+        openAuthModal();
+        toggleAuthTab('login');
+    }
     function openAuthModal() { document.getElementById('auth-modal').classList.add('open'); generateNewLoginCaptcha(); generateNewRegisterCaptcha(); }
     function closeAuthModal() { document.getElementById('auth-modal').classList.remove('open'); }
     
