@@ -716,7 +716,65 @@
         </div>
     </footer>
 
-</div> <div class="cgv-modal-overlay" id="auth-modal">
+<div class="cgv-modal-overlay" id="checkout-review-modal">
+        <div class="cgv-auth-split-box" style="width: 560px; flex-direction: column; padding: 25px; background: white;">
+            <h3 style="border-bottom: 2px solid #222; padding-bottom: 10px; color: #e71a0f;">RÀ SOÁT HÓA ĐƠN</h3>
+            <div id="review-invoice-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 15px;"></div>
+            
+            <div style="background: #f4f2ec; padding: 15px; margin-bottom: 15px; border: 1px dashed #ccc;">
+                <strong>Mã Voucher (Nhập LAS20 để giảm 20%):</strong>
+                <div style="display: flex; gap: 10px; margin-top: 5px;">
+                    <input type="text" id="voucher-input" class="cgv-input-text" style="flex:1;" placeholder="Nhập mã giảm giá">
+                    <button onclick="applyVoucher()" class="btn-cgv-submit" style="width: auto; margin-top: 0;">ÁP DỤNG</button>
+                </div>
+            </div>
+
+            <div class="payment-selection-block">
+                <div class="payment-selection-title">Hình thức thanh toán</div>
+                <div class="payment-selection-body">
+                    <div class="payment-option-row active" onclick="selectPaymentGatewayType('qr', this)">
+                        <div class="option-check-circle">✓</div>
+                        <div class="method-badge-icon badge-mv">Mv</div>
+                        <div class="method-info-texts">
+                            <div class="method-main-name">Chuyển khoản / Quét mã QR</div>
+                            <div class="method-sub-desc">Tự động xuất mã vé trong 30s sau khi chuyển khoản</div>
+                        </div>
+                    </div>
+                    <div class="payment-option-row" onclick="selectPaymentGatewayType('applepay', this)">
+                        <div class="option-check-circle">✓</div>
+                        <div class="method-badge-icon badge-apple">Pay</div>
+                        <div class="method-info-texts">
+                            <div class="method-main-name">Apple Pay</div>
+                        </div>
+                    </div>
+                    <div class="payment-option-row" onclick="selectPaymentGatewayType('momo', this)">
+                        <div class="option-check-circle">✓</div>
+                        <div class="method-badge-icon badge-momo">momo</div>
+                        <div class="method-info-texts">
+                            <div class="method-main-name">Ví MoMo</div>
+                        </div>
+                    </div>
+                    <div class="payment-option-row" onclick="selectPaymentGatewayType('card', this)">
+                        <div class="option-check-circle">✓</div>
+                        <div class="method-badge-icon badge-payoo">Payoo</div>
+                        <div class="method-info-texts">
+                            <div class="method-main-name">Thẻ ATM / Thẻ quốc tế</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 20px;">
+                <span>TỔNG TIỀN THANH TOÁN:</span><span id="review-final-total" style="color: #e71a0f;">0 đ</span>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-cgv-submit" style="background: #777; margin-top: 0;" onclick="closeCheckoutReview()">QUAY LẠI</button>
+                <button class="btn-cgv-submit" style="margin-top: 0;" onclick="processToPaymentGateway()">XÁC NHẬN THANH TOÁN</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cgv-modal-overlay" id="auth-modal">
         <div class="cgv-auth-split-box">
             <div class="cgv-modal-close" onclick="closeAuthModal()">✕</div>
             
@@ -728,13 +786,13 @@
                 
                 <div class="cgv-auth-content auth-form-panel active" id="form-login-panel">
                     <div class="cgv-form-group">
-    <label>Email hoặc số điện thoại</label>
-    <input type="text" id="auth-username" class="cgv-input-text" placeholder="Nhập email hoặc số điện thoại" autocomplete="off">
-</div>
-<div class="cgv-form-group">
-    <label>Mật khẩu</label>
-    <input type="password" id="auth-password" class="cgv-input-text" placeholder="Nhập mật khẩu" autocomplete="new-password">
-</div>
+                        <label>Email hoặc số điện thoại</label>
+                        <input type="text" id="auth-username" class="cgv-input-text" placeholder="Nhập email hoặc số điện thoại" autocomplete="off">
+                    </div>
+                    <div class="cgv-form-group">
+                        <label>Mật khẩu</label>
+                        <input type="password" id="auth-password" class="cgv-input-text" placeholder="Nhập mật khẩu" autocomplete="new-password">
+                    </div>
                     <div class="cgv-form-group">
                         <label>Vui lòng nhập ký tự bên dưới <span>*</span></label>
                         <div class="captcha-row">
@@ -801,7 +859,7 @@
         </div>
     </div>
 
-   <div class="cgv-modal-overlay" id="forgot-modal">
+    <div class="cgv-modal-overlay" id="forgot-modal">
         <div class="cgv-forgot-box">
             <div class="cgv-forgot-header-container">
                 <div class="cgv-forgot-header-tab">Bạn muốn tìm lại mật khẩu?</div>
@@ -856,45 +914,28 @@
         </div>
     </div>
 
-    <div class="cgv-modal-overlay" id="checkout-review-modal">
-        <div class="cgv-auth-split-box" style="width: 500px; flex-direction: column; padding: 25px; background: white;">
-            <h3 style="border-bottom: 2px solid #222; padding-bottom: 10px; color: #e71a0f;">RÀ SOÁT HÓA ĐƠN</h3>
-            <div id="review-invoice-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 15px;"></div>
-            <div style="background: #f4f2ec; padding: 15px; margin-bottom: 15px; border: 1px dashed #ccc;">
-                <strong>Mã Voucher (Nhập LAS20 để giảm 20%):</strong>
-                <div style="display: flex; gap: 10px; margin-top: 5px;">
-                    <input type="text" id="voucher-input" class="cgv-input-text" style="flex:1;" placeholder="Nhập mã giảm giá">
-                    <button onclick="applyVoucher()" class="btn-cgv-submit" style="width: auto; margin-top: 0;">ÁP DỤNG</button>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 20px;">
-                <span>TỔNG TIỀN THANH TOÁN:</span><span id="review-final-total" style="color: #e71a0f;">0 đ</span>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-cgv-submit" style="background: #777; margin-top: 0;" onclick="closeCheckoutReview()">QUAY LẠI</button>
-                <button class="btn-cgv-submit" style="margin-top: 0;" onclick="processToPaymentGateway()">XÁC NHẬN CHUYỂN KHOẢN</button>
-            </div>
-        </div>
-    </div>
-
     <div class="cgv-modal-overlay" id="payment-redirect-modal">
-        <div style="background: white; padding: 30px; text-align: center; border-radius: 8px; border: 2px solid #0066cc; width: 400px; position: relative;">
-            <div class="cgv-modal-close" onclick="closePaymentModal()" style="color: #333; top: 10px; right: 15px;">✕</div>
-            <h2 style="color: #0066cc; margin-top: 0; margin-bottom: 5px;">Thanh Toán VNPAY-QR</h2>
-            <p style="font-size: 13px; color: #555; margin-bottom: 15px;">Quét mã QR bằng ứng dụng ngân hàng để thanh toán</p>
-            <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; display: inline-block; background: #f9f9f9;">
-                <img id="bank-qr-img" src="" alt="QR Code" style="width: 200px; height: 200px; border: 1px solid #ccc; display: block; margin: 0 auto;">
-                <div style="margin-top: 15px; font-size: 20px; font-weight: bold; color: #e71a0f;" id="qr-total-price">0 đ</div>
-            </div>
-            <p style="font-size: 13px; color: #333; margin-top: 15px;">Trạng thái: <span style="color: #f57c00; font-weight: bold;">Đang chờ người dùng quét mã...</span></p>
-            <button class="btn-cgv-submit" style="margin-top: 15px; background: #10B981;" onclick="executeFinalCheckout()">ĐÃ CHUYỂN KHOẢN THÀNH CÔNG</button>
+    <div style="background: white; padding: 30px; text-align: center; border-radius: 8px; border: 2px solid #0066cc; width: 400px; position: relative;">
+        <div class="cgv-modal-close" onclick="closePaymentModal()" style="color: #333; top: 10px; right: 15px;">✕</div>
+        <h2 style="color: #0066cc; margin-top: 0; margin-bottom: 5px;">Thanh Toán VNPAY-QR</h2>
+        <p style="font-size: 13px; color: #555; margin-bottom: 15px;">Quét mã QR bằng ứng dụng ngân hàng để thanh toán</p>
+        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; display: inline-block; background: #f9f9f9;">
+            <img id="bank-qr-img" src="" alt="QR Code" style="width: 200px; height: 200px; border: 1px solid #ccc; display: block; margin: 0 auto;">
+            <div style="margin-top: 15px; font-size: 20px; font-weight: bold; color: #e71a0f;" id="qr-total-price">0 đ</div>
+        </div>
+        <p style="font-size: 13px; color: #333; margin-top: 15px;">Trạng thái: <span style="color: #f57c00; font-weight: bold;">Đang chờ người dùng quét mã...</span></p>
+        
+        <div style="display: flex; gap: 12px; margin-top: 20px; width: 100%;">
+            <button class="btn-cgv-submit" style="background: #777; margin: 0; flex: 1; padding: 12px 0;" onclick="backToPaymentSelection()">QUAY LẠI</button>
+            <button class="btn-cgv-submit" style="background: #10B981; margin: 0; flex: 1; padding: 12px 0;" onclick="executeFinalCheckout()">ĐÃ CHUYỂN KHOẢN THÀNH CÔNG</button>
         </div>
     </div>
+</div>
 
     <div class="cgv-modal-overlay" id="history-detail-modal">
         <div class="cgv-auth-split-box" style="width: 450px; flex-direction: column; padding: 25px; background: #fdfcf7;">
             <div class="cgv-modal-close" onclick="closeHistoryDetailModal()">✕</div>
-            <h3 style="color: #222; text-align: center;">CHI TIẾT HÓA ĐƠN CŨ</h3>
+            <h3 style="color: #222; text-align: center;">CHI TIẾT HÓA ĐƠN VÉ</h3>
             <div id="history-detail-content" style="background: white; padding: 15px; border: 1px solid #ddd; margin-top: 15px;"></div>
         </div>
     </div>
@@ -920,7 +961,7 @@
     let cgvNavigationHistory = ['panel-movies']; 
     let activeSearchKeyword = ""; 
     let selectedDateStr = "";
-
+    let selectedPaymentGateway = 'qr'; // Mặc định chọn quét mã QR
     window.addEventListener('DOMContentLoaded', () => {
         const daySelect = document.getElementById('reg-birth-day');
         const monthSelect = document.getElementById('reg-birth-month');
@@ -933,7 +974,13 @@
             for (let i = 2026; i >= 1950; i--) { yearSelect.innerHTML += `<option value="${i}">${i}</option>`; }
         }
     });
-
+    function selectPaymentGatewayType(type, element) {
+        selectedPaymentGateway = type;
+        // Gỡ bỏ class active ở tất cả các dòng
+        document.querySelectorAll('.payment-option-row').forEach(row => row.classList.remove('active'));
+        // Thêm active vào dòng vừa click
+        element.classList.add('active');
+    }
     function generateRandomCaptcha(length = 6) {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         let result = '';
@@ -966,6 +1013,10 @@
             renderCgvInterface();
         }
     };
+    function backToPaymentSelection() {
+    document.getElementById('payment-redirect-modal').classList.remove('open'); // Đóng modal QR
+    document.getElementById('checkout-review-modal').classList.add('open');    // Mở lại modal chọn cổng
+}
 function openForgotModal() {
         document.getElementById('forgot-modal').classList.add('open');
         generateForgotCaptcha(); // Sinh mã captcha mới cho form này
@@ -1090,11 +1141,23 @@ function openForgotModal() {
     function processToPaymentGateway() {
         closeCheckoutReview(); 
         const finalTotal = currentPriceTotal * (1 - appliedVoucherDiscount);
-        document.getElementById('qr-total-price').innerText = finalTotal.toLocaleString('vi-VN') + " đ";
         
-        const qrData = `Thanh toan ve LAS - So tien: ${finalTotal} VND`;
-        document.getElementById('bank-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
-        document.getElementById('payment-redirect-modal').classList.add('open');
+        // Nếu chọn quét mã QR thì bật popup mã QR VNPAY cũ lên
+        if (selectedPaymentGateway === 'qr') {
+            document.getElementById('qr-total-price').innerText = finalTotal.toLocaleString('vi-VN') + " đ";
+            const bankId = "ICB"; // Thay bằng mã ngân hàng của bạn (Ví dụ: VCB, MB, ICB, ACB...)
+const accountNo = "101879388698"; // Thay bằng số tài khoản ngân hàng của bạn
+const accountName = "NGUYEN BAO HOANG"; // Thay bằng họ tên không dấu của bạn
+const qrData = `LAS CINEMAS THANH TOAN`;
+
+// Đường dẫn tạo mã VietQR tự động điền số tiền đơn hàng
+document.getElementById('bank-qr-img').src = `https://img.vietqr.io/image/${bankId}-${accountNo}-compact.png?amount=${finalTotal}&addInfo=${encodeURIComponent(qrData)}&accountName=${encodeURIComponent(accountName)}`;
+            document.getElementById('payment-redirect-modal').classList.add('open');
+        } else {
+            // Giả lập xử lý nhanh đối với Apple Pay, MoMo, Payoo ngân hàng
+            alert(`Đang kết nối đến cổng giao dịch an toàn của ${selectedPaymentGateway.toUpperCase()}... Vui lòng không đóng trình duyệt.`);
+            executeFinalCheckout(); // Gọi hàm xuất vé thành công luôn
+        }
     }
 
     function closePaymentModal() { document.getElementById('payment-redirect-modal').classList.remove('open'); }
@@ -1501,28 +1564,74 @@ function openForgotModal() {
         }
     }
 
-    function handleMainAction() {
-        if(selectedSeats.length === 0) return alert('Vui lòng chọn ghế trước!');
-        const currentMovie = document.getElementById('cgv-combo-movie').value;
+function handleMainAction() {
+    
 
-        if (!isHoldingState) {
-            fetch('/api/seats/hold', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ movie: currentMovie, showtime: selectedShowtime, seats: selectedSeats })
-            }).then(res => res.json()).then(data => {
-                if(data.success) {
-                    isHoldingState = true;
-                    document.getElementById('btn-main-action').innerText = "Thanh Toán Ngay";
-                    document.getElementById('btn-main-action').style.background = "#10B981";
-                    document.getElementById('hold-timer').style.display = "flex";
-                    startCountdown(data.expiresAt);
-                } else { alert(data.message); }
-            });
-        } else {
-            openCheckoutReview();
-        }
+    if (!isUserLoggedInState) {
+        alert("Bạn phải đăng nhập tài khoản thành viên mới có thể tiến hành đặt vé!");
+        openAuthModal(); // Mở khung đăng nhập lên bắt buộc
+        return;          // Dừng toàn bộ luồng xử lý phía sau
     }
+    if(selectedSeats.length === 0) return alert('Vui lòng chọn ghế trước!');
+    const currentMovie = document.getElementById('cgv-combo-movie').value;
+
+    // GIẢ LẬP: Bỏ qua fetch lên server backend, tự động kích hoạt trạng thái giữ ghế
+    if (!isHoldingState) {
+        isHoldingState = true;
+        document.getElementById('btn-main-action').innerText = "Thanh Toán Ngay";
+        document.getElementById('btn-main-action').style.background = "#10B981";
+        document.getElementById('hold-timer').style.display = "flex";
+        
+        // Giả lập thời gian hết hạn là 5 phút sau
+        startCountdown(Date.now() + 5 * 60 * 1000); 
+    } else {
+        openCheckoutReview();
+    }
+}
+
+function executeFinalCheckout() {
+    const currentMovie = document.getElementById('cgv-combo-movie').value;
+    let currentEmail = isUserLoggedInState ? document.getElementById('profile-field-email').value : "khach@gmail.com";
+
+    document.getElementById('payment-redirect-modal').classList.remove('open');
+    
+    // GIẢ LẬP: Coi như server luôn trả về checkout thành công (success = true)
+    const mockTicketId = "LAS-" + Math.floor(Math.random() * 1000000);
+    const invoiceObj = {
+        id: mockTicketId, movie: currentMovie, date: selectedDateStr, time: selectedShowtime,
+        seats: [...selectedSeats], fnb: fnbMenu.filter(i => i.qty > 0).map(i => ({...i})),
+        total: currentPriceTotal * (1 - appliedVoucherDiscount), status: 'Đã thanh toán (VNPAY)'
+    };
+    userPastInvoices.unshift(invoiceObj); 
+    
+    resetHoldState(); 
+    selectedSeats = []; 
+    fnbMenu.forEach(i => i.qty = 0); 
+    renderFnbMenu(); 
+    calculateCgvCart();
+    
+    // Hiển thị popup vé thành công kèm mã QR định danh vé
+    alert("Giao dịch thành công! Vui lòng lưu lại vé bên dưới.");
+    let fnbHtml = invoiceObj.fnb.map(i => `<li>${i.name} x${i.qty}</li>`).join('');
+    
+    document.getElementById('history-detail-content').innerHTML = `
+        <div style="text-align: center; margin-bottom: 15px;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${invoiceObj.id}" alt="QR Code" style="border: 1px solid #ccc; padding: 5px;">
+            <p style="color: green; font-weight: bold; font-size: 13px;">Vui lòng chụp màn hình vé này!</p>
+        </div>
+        <p><strong>Mã vé:</strong> <span style="color:red;">${invoiceObj.id}</span></p>
+        <p><strong>Phim:</strong> ${invoiceObj.movie}</p>
+        <p><strong>Suất:</strong> ${invoiceObj.time} ngày ${invoiceObj.date}</p>
+        <hr style="margin: 10px 0;">
+        <p><strong>🎟️ Vé ghế ngồi:</strong> ${invoiceObj.seats.join(', ')}</p>
+        <p><strong>🍿 Bắp nước:</strong></p>
+        <ul>${fnbHtml || '<li>Không có</li>'}</ul>
+        <hr style="margin: 10px 0;">
+        <p style="font-size: 16px; text-align: right;"><strong>Thành tiền: <span style="color:red;">${invoiceObj.total.toLocaleString('vi-VN')} đ</span></strong></p>
+    `;
+    
+    document.getElementById('history-detail-modal').classList.add('open');
+}
 
     function generateCgvDateSlider() {
         const container = document.getElementById('cgv-dynamic-date-slider');
