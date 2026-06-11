@@ -412,6 +412,34 @@ header { background-color: var(--cgv-black); border-bottom: 3px solid var(--cgv-
     color: #94a3b8;
     margin-top: 2px;
 }
+/* Hiệu ứng chuyển màu cho đánh giá sao */
+#star-rating-container .star {
+    transition: color 0.2s ease-in-out;
+}
+#star-rating-container .star:hover,
+#star-rating-container .star.hovered,
+#star-rating-container .star.selected {
+    color: #e5a93b; /* Màu vàng nổi bật của LAS Cinemas */
+}   
+/* Thiết kế Nút Tab cho chi tiết phim */
+.detail-tab-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #888;
+    padding: 10px 15px 15px 15px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    outline: none;
+}
+.detail-tab-btn:hover {
+    color: #0066cc;
+}
+.detail-tab-btn.active {
+    color: #0066cc;
+    border-bottom: 2px solid #0066cc;
+}
 /* --- CSS CHO LUỒNG ĐẶT VÉ CHIA TABS --- */
 .booking-step { display: none; animation: fadeIn 0.3s ease-in-out; }
 .booking-step.active { display: block; }
