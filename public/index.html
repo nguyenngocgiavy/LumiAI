@@ -66,9 +66,14 @@
         <div class="admin-sidebar">
             <h2 class="admin-logo">⚙️ QUẢN TRỊ RẠP</h2>
             <ul class="admin-nav-list">
-                <li class="admin-nav-item active" id="nav-admin-overview" onclick="switchAdminTab('overview')">📊 Tổng Quan Doanh Thu</li>
-                <li class="admin-nav-item" id="nav-admin-movies" onclick="switchAdminTab('movies')">🎬 Quản Lý Danh Mục Phim</li>
-                <li class="admin-nav-item" id="nav-admin-showtimes" onclick="switchAdminTab('showtimes')">🕒 Quản Lý Suất Chiếu</li>
+             <li class="admin-nav-item" id="nav-admin-ban" onclick="switchAdminTab('ban')">🚫 Account Ban/Unban</li>
+<li class="admin-nav-item" id="nav-admin-permission" onclick="switchAdminTab('permission')">🔐 Permission Mapping</li>
+<li class="admin-nav-item" id="nav-admin-config" onclick="switchAdminTab('config')">⚙️ Core System Infrastructure Config</li>
+<li class="admin-nav-item" id="nav-admin-syslog" onclick="switchAdminTab('syslog')">📋 System Log Viewer</li>
+<li class="admin-nav-item" id="nav-admin-banner" onclick="switchAdminTab('banner')">🖼️ Marketing Banner Config</li>
+<li class="admin-nav-item" id="nav-admin-faq" onclick="switchAdminTab('faq')">❓ FAQ Management</li>
+<li class="admin-nav-item" id="nav-admin-webhook" onclick="switchAdminTab('webhook')">🔗 Webhook Log Viewer</li>
+<li class="admin-nav-item" id="nav-admin-db" onclick="switchAdminTab('db')">💾 Database Backup/Restore</li>
             </ul>
         </div>
 
@@ -91,27 +96,61 @@
                 </div>
             </div>
 
-            <div id="admin-tab-movies" class="admin-tab-section" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 class="admin-section-title" style="margin: 0;">DANH MỤC PHIM HỆ THỐNG</h3>
-                    <button class="btn-cgv-submit" style="width: auto; margin: 0; padding: 10px 20px;" onclick="openAdminMovieModal()">+ THÊM PHIM MỚI</button>
-                </div>
-                <div class="admin-table-wrapper">
-                    <table class="admin-data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Tên Phim</th>
-                                <th>Thể Loại</th>
-                                <th>Trạng Thái</th>
-                                <th>Thao Tác</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-movie-tbody">
-                            </tbody>
-                    </table>
-                </div>
-            </div>
+            <div id="admin-tab-ban" class="admin-tab-section" style="display: none;">
+    <h3 class="admin-section-title">ACCOUNT BAN/UNBAN POPUP</h3>
+    <div style="background: white; padding: 20px; border-radius: 6px; border: 1px solid #e0e0e0;">
+        <p style="color: #666; font-size: 14px; margin: 0;">Giao diện quản lý đình chỉ và mở khóa tài khoản người dùng đang được phát triển...</p>
+    </div>
+</div>
+
+<div id="admin-tab-permission" class="admin-tab-section" style="display: none;">
+    <h3 class="admin-section-title">PERMISSION MAPPING SCREEN</h3>
+    <div style="background: white; padding: 20px; border-radius: 6px; border: 1px solid #e0e0e0;">
+        <p style="color: #666; font-size: 14px; margin: 0;">Giao diện phân quyền và ánh xạ vai trò hệ thống đang được phát triển...</p>
+    </div>
+</div>
+
+<div id="admin-tab-config" class="admin-tab-section" style="display: none;">
+    <h3 class="admin-section-title">CORE SYSTEM INFRASTRUCTURE CONFIG</h3>
+    <div style="background: white; padding: 20px; border-radius: 6px; border: 1px solid #e0e0e0;">
+        <p style="color: #666; font-size: 14px; margin: 0;">Giao diện cấu hình hạ tầng cốt lõi của hệ thống đang được phát triển...</p>
+    </div>
+</div>
+
+<div id="admin-tab-syslog" class="admin-tab-section" style="display: none;">
+    <h3 class="admin-section-title">SYSTEM LOG VIEWER SCREEN</h3>
+    <div style="background: white; padding: 20px; border-radius: 6px; border: 1px solid #e0e0e0;">
+        <p style="color: #666; font-size: 14px; margin: 0;">Trình xem nhật ký hoạt động (System Log) đang được phát triển...</p>
+    </div>
+</div>
+
+<div id="admin-tab-banner" class="admin-tab-section" style="display: none;">
+    <h3 class="admin-section-title">MARKETING BANNER CONFIG SCREEN</h3>
+    <div style="background: white; padding: 20px; border-radius: 6px; border: 1px solid #e0e0e0;">
+        <p style="color: #666; font-size: 14px; margin: 0;">Giao diện thiết lập và hiển thị Banner Marketing đang được phát triển...</p>
+    </div>
+</div>
+
+<div id="admin-tab-faq" class="admin-tab-section" style="display: none;">
+    <h3 class="admin-section-title">FAQ MANAGEMENT SCREEN</h3>
+    <div style="background: white; padding: 20px; border-radius: 6px; border: 1px solid #e0e0e0;">
+        <p style="color: #666; font-size: 14px; margin: 0;">Giao diện quản trị danh sách câu hỏi thường gặp (FAQ) đang được phát triển...</p>
+    </div>
+</div>
+
+<div id="admin-tab-webhook" class="admin-tab-section" style="display: none;">
+    <h3 class="admin-section-title">WEBHOOK LOG VIEWER TAB</h3>
+    <div style="background: white; padding: 20px; border-radius: 6px; border: 1px solid #e0e0e0;">
+        <p style="color: #666; font-size: 14px; margin: 0;">Trình theo dõi và kiểm tra các payload Webhook đang được phát triển...</p>
+    </div>
+</div>
+
+<div id="admin-tab-db" class="admin-tab-section" style="display: none;">
+    <h3 class="admin-section-title">DATABASE BACKUP/RESTORE SCREEN</h3>
+    <div style="background: white; padding: 20px; border-radius: 6px; border: 1px solid #e0e0e0;">
+        <p style="color: #666; font-size: 14px; margin: 0;">Công cụ sao lưu và phục hồi cơ sở dữ liệu hệ thống đang được phát triển...</p>
+    </div>
+</div>
 
             <div id="admin-tab-showtimes" class="admin-tab-section" style="display: none;">
                 <h3 class="admin-section-title">CẤU HÌNH LỊCH CHIẾU</h3>
