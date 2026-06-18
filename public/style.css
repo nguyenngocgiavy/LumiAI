@@ -489,3 +489,25 @@ header { background-color: var(--cgv-black); border-bottom: 3px solid var(--cgv-
 .btn-admin-action { background: transparent; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-right: 5px; font-weight: bold;}
 .btn-admin-action.edit { color: #0066cc; border-color: #0066cc; }
 .btn-admin-action.delete { color: #e71a0f; border-color: #e71a0f; }
+
+/* --- MA TRẬN LỊCH CHIẾU --- */
+.matrix-container { background: white; border: 1px solid #ddd; border-radius: 6px; overflow-x: auto; padding: 15px; }
+.matrix-timeline { display: flex; border-bottom: 2px solid #e71a0f; margin-left: 150px; position: relative; height: 30px; }
+.time-mark { flex: 1; text-align: left; font-size: 12px; font-weight: bold; color: #555; border-left: 1px dashed #ccc; padding-left: 5px; }
+.matrix-room-row { display: flex; align-items: center; border-bottom: 1px solid #eee; height: 80px; }
+.room-label { width: 150px; font-weight: bold; font-size: 13px; color: #222; flex-shrink: 0; border-right: 2px solid #ddd; padding-right: 10px; text-align: right; }
+.room-schedule { flex-grow: 1; position: relative; height: 100%; background: #fdfcf7; }
+.schedule-block { position: absolute; top: 15px; height: 50px; border-radius: 4px; color: white; padding: 5px 10px; box-sizing: border-box; font-size: 11px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; transition: transform 0.2s; }
+.schedule-block:hover { transform: scale(1.02); z-index: 10; }
+.color-red { background: linear-gradient(135deg, #e71a0f, #b31010); }
+.color-blue { background: linear-gradient(135deg, #1976d2, #0d47a1); }
+.color-orange { background: linear-gradient(135deg, #f57c00, #e65100); }
+
+/* --- QUẢN LÝ F&B --- */
+.fnb-card { background: white; border: 1px solid #ddd; border-radius: 6px; padding: 15px; display: flex; align-items: center; gap: 15px; position: relative; overflow: hidden; }
+.fnb-icon-box { width: 60px; height: 60px; background: #f4f2ec; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+.fnb-info { flex-grow: 1; }
+.fnb-name { font-weight: bold; font-size: 14px; color: #222; margin-bottom: 5px; }
+.fnb-price { color: #e71a0f; font-weight: bold; font-size: 16px; }
+.fnb-stock { font-size: 11px; color: #10B981; font-weight: bold; margin-top: 5px; }
+.fnb-actions { display: flex; flex-direction: column; gap: 5px; }
