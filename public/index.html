@@ -61,29 +61,90 @@
     </div>
 
    <div class="main-wrapper">
-    <div id="panel-admin-dashboard" class="cgv-panel" style="display: none; padding: 20px; background: #fff; border: 1px solid #ddd;">
-        
-        <div style="border-bottom: 2px solid #e71a0f; padding-bottom: 10px; margin-bottom: 15px;">
-            <h2 style="color: #e71a0f; margin: 0;">🛡️ BẢNG ĐIỀU KHIỂN QUẢN LÝ (MANAGER DASHBOARD)</h2> 
-        </div>
-        
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-            <div style="background: #f4f2ec; padding: 20px; border-radius: 4px; text-align: center;">
-                <h3>🎬 Quản Lý Phim</h3>
-                <button style="background:#111; color:#fff; border:none; padding:10px 15px; cursor:pointer;">Thêm Phim Mới</button>
-            </div>
-            <div style="background: #f4f2ec; padding: 20px; border-radius: 4px; text-align: center;">
-                <h3>📊 Doanh Thu</h3>
-                <p style="font-size:24px; font-weight:bold; color:green;">15,400,000 đ</p>
-            </div>
-            <div style="background: #f4f2ec; padding: 20px; border-radius: 4px; text-align: center;">
-                <h3>👥 Người Dùng</h3>
-                <button style="background:#111; color:#fff; border:none; padding:10px 15px; cursor:pointer;">Phân Quyền Nhân Viên</button>
-            </div>
+    <div id="panel-admin-dashboard" class="cgv-panel" style="display: none; background: #f4f6f9; padding: 0;">
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <h2 class="admin-logo">⚙️ QUẢN TRỊ RẠP</h2>
+            <ul class="admin-nav-list">
+                <li class="admin-nav-item active" id="nav-admin-overview" onclick="switchAdminTab('overview')">📊 Tổng Quan Doanh Thu</li>
+                <li class="admin-nav-item" id="nav-admin-movies" onclick="switchAdminTab('movies')">🎬 Quản Lý Danh Mục Phim</li>
+                <li class="admin-nav-item" id="nav-admin-showtimes" onclick="switchAdminTab('showtimes')">🕒 Quản Lý Suất Chiếu</li>
+            </ul>
         </div>
 
-    </div> </div>
+        <div class="admin-main-content">
+            <div id="admin-tab-overview" class="admin-tab-section active">
+                <h3 class="admin-section-title">BÁO CÁO KẾT QUẢ KINH DOANH TRONG NGÀY</h3>
+                <div class="admin-metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">Tổng Doanh Thu</div>
+                        <div class="metric-value" style="color: #10B981;">24,500,000 đ</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Số Vé Đã Bán</div>
+                        <div class="metric-value" style="color: #0066cc;">142 Vé</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Hiệu Suất Lấp Đầy</div>
+                        <div class="metric-value" style="color: #e5a93b;">68.5%</div>
+                    </div>
+                </div>
+            </div>
 
+            <div id="admin-tab-movies" class="admin-tab-section" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 class="admin-section-title" style="margin: 0;">DANH MỤC PHIM HỆ THỐNG</h3>
+                    <button class="btn-cgv-submit" style="width: auto; margin: 0; padding: 10px 20px;" onclick="openAdminMovieModal()">+ THÊM PHIM MỚI</button>
+                </div>
+                <div class="admin-table-wrapper">
+                    <table class="admin-data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên Phim</th>
+                                <th>Thể Loại</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-movie-tbody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="admin-tab-showtimes" class="admin-tab-section" style="display: none;">
+                <h3 class="admin-section-title">CẤU HÌNH LỊCH CHIẾU</h3>
+                <p style="color: #666; font-size: 14px;">Tính năng điều chỉnh khung giờ và phòng chiếu đang được phát triển...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cgv-modal-overlay" id="admin-add-movie-modal">
+    <div class="cgv-auth-split-box" style="width: 500px; flex-direction: column; padding: 25px; background: white;">
+        <div class="cgv-modal-close" onclick="closeAdminMovieModal()">✕</div>
+        <h3 style="color: #e71a0f; margin-top: 0; border-bottom: 2px solid #222; padding-bottom: 10px;">THÊM MỚI PHIM</h3>
+        
+        <div class="cgv-form-group">
+            <label>Tên phim gốc <span>*</span></label>
+            <input type="text" id="admin-input-title" class="cgv-input-text" placeholder="Nhập tên phim...">
+        </div>
+        <div class="cgv-form-group">
+            <label>Thể loại <span>*</span></label>
+            <input type="text" id="admin-input-genre" class="cgv-input-text" placeholder="VD: Hành Động, Hài Hước...">
+        </div>
+        <div class="cgv-form-group">
+            <label>Trạng thái phát hành <span>*</span></label>
+            <select id="admin-input-status" class="cgv-input-text">
+                <option value="now_showing">Đang chiếu (Now Showing)</option>
+                <option value="coming_soon">Sắp chiếu (Coming Soon)</option>
+            </select>
+        </div>
+        
+        <button class="btn-cgv-submit" onclick="submitAddNewMovie()">LƯU VÀO HỆ THỐNG</button>
+    </div>
+</div>
 <div id="panel-staff-dashboard" class="cgv-panel" style="display: none; padding: 20px; background: #fff; border: 1px solid #ddd;">
     <div style="border-bottom: 2px solid #0066cc; padding-bottom: 10px; margin-bottom: 15px;">
         <h2 style="color: #0066cc; margin: 0;">📋 HỆ THỐNG TÁC VỤ NHÂN VIÊN (STAFF PANEL)</h2>
@@ -2110,6 +2171,121 @@ function handleMainAction() {
         // Đang ở Bước 3: Gọi cổng thanh toán (QR)
         processToPaymentGateway(); 
     }
+}
+
+// --- BẮT ĐẦU: XỬ LÝ NGHIỆP VỤ MANAGER ---
+function switchAdminTab(tabName) {
+    // Đổi trạng thái menu
+    document.querySelectorAll('.admin-nav-item').forEach(item => item.classList.remove('active'));
+    document.getElementById('nav-admin-' + tabName).classList.add('active');
+
+    // Đổi trạng thái vùng nội dung
+    document.querySelectorAll('.admin-tab-section').forEach(section => section.style.display = 'none');
+    document.getElementById('admin-tab-' + tabName).style.display = 'block';
+
+    // Nếu bấm vào tab quản lý phim, tự động render lại bảng dữ liệu
+    if (tabName === 'movies') {
+        renderAdminMovieList();
+    }
+}
+
+function renderAdminMovieList() {
+    const tbody = document.getElementById('admin-movie-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    // Lấy dữ liệu phim từ biến serverData đã được đồng bộ qua WebSocket
+    serverData.movies.forEach(m => {
+        const statusClass = m.status === 'now_showing' ? 'status-now' : 'status-soon';
+        const statusText = m.status === 'now_showing' ? 'Đang Chiếu' : 'Sắp Chiếu';
+
+        tbody.innerHTML += `
+            <tr>
+                <td><strong>#${m.id}</strong></td>
+                <td style="color: #111; font-weight: bold;">${m.title}</td>
+                <td>${m.genre}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td>
+                    <button class="btn-admin-action edit">Sửa</button>
+                    <button class="btn-admin-action delete" onclick="alert('Tính năng xóa đang bảo trì!')">Xóa</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function openAdminMovieModal() {
+    document.getElementById('admin-add-movie-modal').classList.add('open');
+}
+
+function closeAdminMovieModal() {
+    document.getElementById('admin-add-movie-modal').classList.remove('open');
+    // Clear form
+    document.getElementById('admin-input-title').value = '';
+    document.getElementById('admin-input-genre').value = '';
+}
+
+function submitAddNewMovie() {
+    const title = document.getElementById('admin-input-title').value.trim();
+    const genre = document.getElementById('admin-input-genre').value.trim();
+    const status = document.getElementById('admin-input-status').value;
+
+    if (!title || !genre) {
+        return alert("Vui lòng nhập đầy đủ Tên phim và Thể loại!");
+    }
+
+    // Tạm thời push thẳng vào mảng local frontend để xem kết quả trực quan
+    const newId = serverData.movies.length > 0 ? Math.max(...serverData.movies.map(m => m.id)) + 1 : 1;
+    serverData.movies.push({
+        id: newId,
+        title: title,
+        genre: genre,
+        status: status,
+        img: 'https://www.cgv.vn/media/catalog/product/placeholder/default/cgv_title.png'
+    });
+
+    alert("Đã thêm phim: " + title + " thành công!");
+    closeAdminMovieModal();
+    
+    // Render lại bảng quản lý và trang chủ để cập nhật UI
+    renderAdminMovieList();
+    renderCgvInterface();
+}
+// --- KẾT THÚC: XỬ LÝ NGHIỆP VỤ MANAGER ---
+function submitCgvLogin(event) {
+    if (event) event.preventDefault();
+
+    const user = document.getElementById('auth-username').value.trim();
+    const pass = document.getElementById('auth-password').value;
+
+    // --- ĐOẠN CODE TEST NHANH (HARDCODE) ---
+    if (user === 'admin' && pass === '123') {
+        isUserLoggedInState = true;
+        closeAuthModal();
+        
+        // Ẩn các panel khác và hiện panel Manager
+        document.querySelectorAll('.cgv-panel').forEach(p => {
+            p.classList.remove('active');
+            p.style.display = 'none';
+        });
+        
+        const adminPanel = document.getElementById('panel-admin-dashboard');
+        adminPanel.classList.add('active');
+        adminPanel.style.display = 'block';
+        
+        // Cập nhật tên trên thanh điều hướng
+        updateTopBarMenu("Nguyễn Bảo Hoàng", "MANAGER");
+        
+        // Render dữ liệu
+        renderAdminMovieList();
+        
+        alert("[QUẢN LÝ HỆ THỐNG] Đăng nhập Test thành công!");
+        return; // Dừng hàm tại đây, không gọi fetch API nữa
+    }
+    // --- KẾT THÚC ĐOẠN TEST ---
+
+    // Các phần code kiểm tra Captcha và gọi fetch() đến localhost:8080 giữ nguyên ở bên dưới...
+    // ...
 }
 function goToBookingStep(step) {
     // Đổi màu thanh tiến trình
