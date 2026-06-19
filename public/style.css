@@ -460,15 +460,29 @@ header { background-color: var(--cgv-black); border-bottom: 3px solid var(--cgv-
 /* ==========================================================================
    MANAGER DASHBOARD (GIAO DIỆN QUẢN TRỊ)
    ========================================================================== */
-.admin-layout { display: flex; min-height: 80vh; background: #f4f6f9; border: 1px solid #ddd; }
-.admin-sidebar { width: 260px; background: #111111; color: white; padding: 20px 0; flex-shrink: 0; }
+.admin-layout {
+    display: flex !important; /* Ép sidebar và nội dung đứng cạnh nhau */
+    width: 100% !important;
+    height: 100vh !important; /* Chiều cao đủ màn hình */
+    background: #f4f6f9;
+}
+.admin-sidebar {
+    width: 260px !important;
+    background: #111111;
+    color: white;
+    flex-shrink: 0; /* Ép không cho Sidebar bị co lại */
+}
 .admin-logo { color: #e71a0f; font-size: 20px; font-weight: 900; text-align: center; margin-bottom: 30px; letter-spacing: 1px; }
 .admin-nav-list { list-style: none; padding: 0; margin: 0; }
 .admin-nav-item { padding: 15px 25px; font-size: 14px; font-weight: bold; color: #aaa; cursor: pointer; border-left: 4px solid transparent; transition: all 0.2s; }
 .admin-nav-item:hover { background: #222; color: white; }
 .admin-nav-item.active { background: #222; color: #e71a0f; border-left-color: #e71a0f; }
 
-.admin-main-content { flex-grow: 1; padding: 30px; box-sizing: border-box; overflow-y: auto; }
+.admin-main-content {
+    flex-grow: 1 !important; /* Ép nội dung chiếm hết chỗ còn lại */
+    padding: 30px;
+    overflow-y: auto; /* Cho phép cuộn trang nếu dài quá */
+}
 .admin-section-title { font-size: 20px; color: #222; margin-top: 0; margin-bottom: 25px; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
 
 /* Thẻ chỉ số tổng quan */
