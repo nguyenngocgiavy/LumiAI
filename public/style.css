@@ -740,3 +740,400 @@ header { background-color: var(--cgv-black); border-bottom: 3px solid var(--cgv-
 .mp-table th { text-align: left; padding: 15px 10px; color: #111; font-weight: bold; border-bottom: 2px solid #eee; }
 .mp-table td { padding: 15px 10px; color: #555; border-bottom: 1px solid #f5f5f5; }
 .mp-table tr:hover td { background: #fafafa; }
+
+/* ==========================================================================
+   CINEMA MANAGER PRO - QUẢN LÝ DANH MỤC PHIM & MODAL
+   ========================================================================== */
+
+/* Thanh công cụ Action Bar */
+.mp-action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.mp-btn-add {
+    background: #e53935;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.mp-btn-add:hover { background: #c62828; }
+
+.mp-filters {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.mp-search-box {
+    position: relative;
+}
+.mp-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 14px;
+}
+.mp-search-box input {
+    padding: 9px 15px 9px 35px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    font-size: 13px;
+    width: 200px;
+    transition: border 0.2s;
+}
+.mp-search-box input:focus { border-color: #e53935; }
+
+.mp-filter-select {
+    padding: 9px 30px 9px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: white;
+    color: #555;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23777%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 10px auto;
+}
+
+/* Bảng Danh mục Phim */
+.mp-movie-table th { color: #555; font-size: 12px; border-bottom: 2px solid #ddd; }
+.mp-movie-table td { vertical-align: middle; }
+
+.mp-movie-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.mp-movie-poster {
+    width: 40px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.mp-movie-title-vn {
+    font-weight: bold;
+    color: #222;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+.mp-movie-title-en {
+    font-size: 11px;
+    color: #777;
+}
+
+/* Badges */
+.mp-age-badges { display: flex; gap: 4px; align-items: center; }
+.mp-badge {
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+}
+.mp-badge.c18 { background-color: #d32f2f; }
+.mp-badge.c13 { background-color: #4caf50; }
+.mp-badge.p { background-color: #8bc34a; }
+
+.mp-status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.mp-status.active { background: #e0f2f1; color: #00897b; }
+.mp-status.inactive { background: #eeeeee; color: #757575; }
+
+/* Các nút hành động Icon */
+.mp-table-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+.mp-action-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #777;
+    transition: color 0.2s, transform 0.2s;
+    padding: 0;
+}
+.mp-action-btn:hover { color: #e53935; transform: scale(1.1); }
+.mp-row-inactive { background-color: #fbe9e7 !important; }
+
+/* Modal Xóa Phim */
+.mp-delete-popup {
+    width: 400px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+    animation: fadeIn 0.2s ease-in-out;
+}
+.mp-delete-header {
+    background: #c62828;
+    color: white;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+}
+.mp-delete-body {
+    padding: 25px 30px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+}
+.mp-delete-footer {
+    padding: 0 30px 25px 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+.mp-btn-cancel {
+    background: #757575;
+    color: white;
+    border: none;
+    padding: 10px 0;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    flex: 1;
+}
+.mp-btn-confirm {
+    background: #e53935;
+    color: white;
+    border: none;
+    padding: 10px 0;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    flex: 1;
+}
+/* ==========================================================================
+   CINEMA MANAGER PRO - MA TRẬN LỊCH CHIẾU (GANTT CHART)
+   ========================================================================== */
+
+.mp-btn-outline {
+    background: #fff; border: 1px solid #ccc; color: #333;
+    padding: 9px 15px; border-radius: 6px; font-weight: bold;
+    font-size: 13px; cursor: pointer; transition: background 0.2s;
+}
+.mp-btn-outline:hover { background: #f4f6f9; }
+.mp-date-picker {
+    background: #fff; border: 1px solid #ddd; padding: 9px 15px;
+    border-radius: 6px; font-size: 13px; color: #333; font-weight: bold; cursor: pointer;
+}
+
+.mp-matrix-container {
+    background: #fff; border: 1px solid #eee; border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02); overflow-x: auto;
+    padding-bottom: 20px;
+}
+
+.mp-matrix-header {
+    display: flex; border-bottom: 1px solid #ddd; padding: 15px 0 10px 0;
+}
+.mp-matrix-room-col {
+    width: 60px; flex-shrink: 0; border-right: 1px solid #eee;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; color: #555; font-size: 12px;
+}
+/* Hiệu ứng xoay chữ dọc cho tên phòng chiếu */
+.mp-matrix-room-name {
+    writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: 1px;
+}
+
+.mp-matrix-timeline {
+    flex-grow: 1; display: flex; justify-content: space-between;
+    padding: 0 2%; color: #555; font-size: 12px; font-weight: bold;
+}
+
+.mp-matrix-row {
+    display: flex; border-bottom: 1px solid #f5f5f5; height: 90px;
+}
+
+.mp-matrix-tracks {
+    flex-grow: 1; position: relative;
+    /* Vẽ các đường kẻ dọc mờ tương ứng với từng giờ */
+    background-image: repeating-linear-gradient(to right, transparent, transparent calc(6.66% - 1px), #f9f9f9 calc(6.66% - 1px), #f9f9f9 6.66%);
+}
+
+/* Các khối lịch chiếu */
+.mp-track-block {
+    position: absolute; top: 10px; bottom: 10px; border-radius: 6px;
+    padding: 8px; color: #fff; font-size: 11px; line-height: 1.4;
+    overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer; transition: transform 0.2s, z-index 0.2s;
+}
+.mp-track-block:hover { transform: scale(1.02); z-index: 10 !important; }
+
+/* Bảng màu khối phim */
+.mp-bg-yellow { background: #fdc02f; color: #333; }
+.mp-bg-blue { background: #2b78c9; }
+.mp-bg-green { background: #7cb342; }
+.mp-bg-red { background: #d32f2f; }
+.mp-bg-gray {
+    background: #e0e0e0; color: #777; text-align: center;
+    display: flex; align-items: center; justify-content: center; font-weight: bold;
+}
+
+.mp-gap-text {
+    position: absolute; top: 0; bottom: 0; display: flex;
+    align-items: center; justify-content: center; font-size: 10px; color: #999; font-weight: bold;
+}
+
+/* --- XỬ LÝ HIỆU ỨNG XUNG ĐỘT (CONFLICT) --- */
+.mp-conflict-box {
+    border: 2px solid #d32f2f;
+    animation: pulse-red-glow 1.5s infinite;
+    z-index: 5;
+}
+@keyframes pulse-red-glow {
+    0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(211, 47, 47, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+}
+
+.mp-conflict-tooltip {
+    position: absolute; top: -35px; left: 50%; transform: translateX(-50%);
+    background: white; border-radius: 4px; padding: 8px 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15); border: 1px solid #ddd;
+    color: #333; font-size: 11px; white-space: nowrap; z-index: 20;
+    display: flex; gap: 8px; align-items: center;
+}
+.mp-conflict-tooltip::after {
+    content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+    border-width: 6px 6px 0; border-style: solid; border-color: white transparent transparent transparent;
+}
+.mp-icon-error {
+    background: #d32f2f; color: white; width: 14px; height: 14px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 10px;
+}
+/* ==========================================================================
+   CINEMA MANAGER PRO - QUẢN LÝ KHO F&B
+   ========================================================================== */
+
+.mp-fnb-header-controls {
+    background: #fff; border: 1px solid #eee; padding: 20px;
+    border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+.mp-fnb-top-row { 
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; 
+}
+.mp-fnb-actions { display: flex; gap: 10px; }
+
+.mp-fnb-bottom-row { 
+    display: flex; justify-content: space-between; align-items: center; 
+}
+
+.mp-fnb-table th, .mp-fnb-table td { 
+    padding: 12px 10px; vertical-align: middle; border-bottom: 1px solid #f5f5f5;
+}
+
+/* Ảnh sản phẩm F&B */
+.mp-fnb-img {
+    width: 24px; height: 32px; object-fit: contain;
+}
+
+/* Hiệu ứng dòng Tồn kho thấp (Low Stock) */
+.mp-fnb-low-stock-row {
+    background-color: #fff5f5 !important;
+    position: relative;
+    z-index: 2;
+}
+/* Tạo viền đỏ nhấp nháy bằng box-shadow outline */
+.mp-fnb-low-stock-row td {
+    border-top: 2px solid #e53935;
+    border-bottom: 2px solid #e53935;
+}
+.mp-fnb-low-stock-row td:first-child { border-left: 2px solid #e53935; border-radius: 6px 0 0 6px; }
+.mp-fnb-low-stock-row td:last-child { border-right: 2px solid #e53935; border-radius: 0 6px 6px 0; }
+
+.mp-badge-lowstock {
+    background: #f57c00; color: white; padding: 3px 6px; border-radius: 4px;
+    font-size: 10px; font-weight: bold; margin-left: 5px; text-transform: uppercase;
+}
+
+/* Tooltip cảnh báo nổi lên */
+.mp-fnb-tooltip {
+    position: absolute; right: 30px; bottom: 40px; 
+    background: white; border: 1px solid #f57c00; border-radius: 6px;
+    padding: 12px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    font-size: 12px; color: #333; z-index: 10; display: flex; gap: 8px; align-items: flex-start;
+    animation: fadeIn 0.3s ease-in-out;
+}
+.mp-fnb-tooltip::before {
+    content: ''; position: absolute; top: -6px; right: 20px;
+    border-width: 0 6px 6px; border-style: solid; border-color: transparent transparent #f57c00 transparent;
+}
+.mp-fnb-tooltip::after {
+    content: ''; position: absolute; top: -4px; right: 20px;
+    border-width: 0 6px 6px; border-style: solid; border-color: transparent transparent white transparent;
+}
+/* ==========================================================================
+   CINEMA MANAGER PRO - QUẢN LÝ KHUYẾN MÃI
+   ========================================================================== */
+.mp-promo-status { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+.status-active { background: #e8f5e9; color: #2e7d32; }
+.status-running { background: #fff3e0; color: #ef6c00; }
+.status-expired { background: #f5f5f5; color: #616161; }
+
+/* Dòng hết hạn */
+.mp-promo-expired { background-color: #fff5f5 !important; color: #999; }
+.mp-promo-expired td { border-bottom: 1px solid #ffebee; }
+
+/* Modal Tạo Khuyến Mãi */
+.mp-modal-box {
+    background: white; width: 450px; padding: 25px; border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative;
+}
+.mp-modal-header { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+.mp-modal-sub { font-size: 13px; color: #666; margin-bottom: 20px; }
+.mp-modal-close { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 20px; color: #999; }
+.mp-input-group { margin-bottom: 15px; }
+.mp-input-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; }
+.mp-flex-row { display: flex; gap: 10px; }
+.mp-btn-generate { background: #eef2f6; border: none; padding: 10px; border-radius: 6px; color: #2196f3; font-weight: bold; cursor: pointer; }
+.mp-btn-action { background: #111; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+/* ==========================================================================
+   CINEMA MANAGER PRO - KIỂM TOÁN
+   ========================================================================== */
+   .mp-report-filter {
+    display: flex; gap: 10px; margin-bottom: 20px;
+    background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #eee;
+}
+.mp-select-sm { padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
+.mp-btn-report { padding: 8px 15px; border-radius: 4px; font-weight: bold; font-size: 12px; cursor: pointer; border: none; }
+.mp-btn-export { background: #5d4037; color: white; }
+.mp-btn-audit { background: #d84315; color: white; }
+
+.mp-report-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+.mp-report-card { background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
+
+.mp-audit-status {
+    padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;
+}
+.status-error { background: #ffebee; color: #c62828; }
+.status-ok { background: #e8f5e9; color: #2e7d32; }
