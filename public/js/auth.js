@@ -52,6 +52,7 @@ function executeForgotRequestSubmit() {
 }
 
 // --- ĐĂNG NHẬP ---
+// --- ĐĂNG NHẬP ---
 function submitCgvLogin(event) {
     if (event) event.preventDefault();
     const user = document.getElementById('auth-username').value.trim();
@@ -66,19 +67,37 @@ function submitCgvLogin(event) {
         generateNewLoginCaptcha(); document.getElementById('login-captcha').value = ""; return;
     }
 
+    // --- 1. TÀI KHOẢN TEST: ADMIN (QUẢN TRỊ HỆ THỐNG) ---
     if (user === 'admin' && pass === '123') {
         isUserLoggedInState = true;
         closeAuthModal();
         document.querySelectorAll('.cgv-panel').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+        
         const adminPanel = document.getElementById('panel-admin-dashboard');
         if (adminPanel) { adminPanel.classList.add('active'); adminPanel.style.display = 'block'; }
-        updateTopBarMenu("Nguyễn Bảo Hoàng", "MANAGER");
         
+        updateTopBarMenu("Nguyễn Bảo Hoàng", "ADMIN");
         renderAdminBanList(); renderAdminSysLog(); renderAdminFaq(); renderAdminWebhook(); renderAdminDbBackups();
-        alert("[QUẢN LÝ HỆ THỐNG] Đăng nhập Test thành công!");
+        alert("[QUẢN TRỊ HỆ THỐNG] Đăng nhập Test thành công!");
         return; 
     }
 
+    // --- 2. TÀI KHOẢN TEST: MANAGER (QUẢN LÝ RẠP) ---
+    if (user === 'manager' && pass === '123') {
+        isUserLoggedInState = true;
+        closeAuthModal();
+        document.querySelectorAll('.cgv-panel').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+        
+        // Gọi ID của giao diện Manager bạn vừa dán trong HTML nè
+        const managerPanel = document.getElementById('panel-manager-dashboard');
+        if (managerPanel) { managerPanel.classList.add('active'); managerPanel.style.display = 'block'; }
+        
+        updateTopBarMenu("Trần Thị Quản Lý", "MANAGER");
+        alert("[QUẢN LÝ RẠP] Đăng nhập Test thành công!");
+        return; 
+    }
+
+    // --- 3. LUỒNG GỌI API BACKEND THỰC TẾ ---
     fetch('http://localhost:8080/api/login/login', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier: user, password: pass })
@@ -96,18 +115,23 @@ function submitCgvLogin(event) {
             const userRole = parseInt(userData.roleId);
             document.querySelectorAll('.cgv-panel').forEach(panel => { panel.classList.remove('active'); panel.style.display = 'none'; });
 
-            if (userRole === 1) {
-                alert(`[QUẢN LÝ HỆ THỐNG] Xin chào Manager: ${userData.fullName}.`);
+            if (userRole === 1) { // ROLE 1: ADMIN
+                alert(`[QUẢN LÝ HỆ THỐNG] Xin chào Admin: ${userData.fullName}.`);
                 const adminPanel = document.getElementById('panel-admin-dashboard');
                 if (adminPanel) { adminPanel.classList.add('active'); adminPanel.style.display = 'block'; }
-                updateTopBarMenu(userData.fullName, "MANAGER");
+                updateTopBarMenu(userData.fullName, "ADMIN");
                 renderAdminBanList(); renderAdminSysLog(); renderAdminFaq(); renderAdminWebhook(); renderAdminDbBackups();
-            } else if (userRole === 2) {
+            } else if (userRole === 4) { // ROLE 4: MANAGER
+                alert(`[QUẢN LÝ RẠP] Xin chào Manager: ${userData.fullName}.`);
+                const managerPanel = document.getElementById('panel-manager-dashboard');
+                if (managerPanel) { managerPanel.classList.add('active'); managerPanel.style.display = 'block'; }
+                updateTopBarMenu(userData.fullName, "MANAGER");
+            } else if (userRole === 2) { // ROLE 2: NHÂN VIÊN
                 alert(`[NHÂN VIÊN RẠP] Xin chào: ${userData.fullName}.`);
                 const staffPanel = document.getElementById('panel-staff-dashboard');
                 if (staffPanel) { staffPanel.classList.add('active'); staffPanel.style.display = 'block'; }
                 updateTopBarMenu(userData.fullName, "NHÂN VIÊN");
-            } else if (userRole === 3) {
+            } else if (userRole === 3) { // ROLE 3: KHÁCH HÀNG
                 alert(`Chào mừng Hội viên LAS Cinemas: ${userData.fullName} đã quay trở lại!`);
                 if (document.getElementById('profile-field-name')) document.getElementById('profile-field-name').value = userData.fullName;
                 if (document.getElementById('profile-field-phone')) document.getElementById('profile-field-phone').value = userData.phoneNumber || "";
@@ -125,7 +149,6 @@ function submitCgvLogin(event) {
         }
     }).catch(err => { console.error(err); alert("Sự cố hệ thống!"); });
 }
-
 // --- ĐĂNG KÝ & OTP ---
 function submitCgvRegister(event) {
     if (event) event.preventDefault();
