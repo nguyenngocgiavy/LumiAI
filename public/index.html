@@ -519,12 +519,33 @@
                         <h2 class="mp-title" id="mp-dynamic-title">Tổng quan hoạt động rạp</h2>
                         <div class="mp-header-utils">
                             <div class="mp-date-badge">20/06/2026</div>
-                            <div class="mp-bell">🔔</div>
-                            <div class="mp-profile">
+                            
+                            <div class="mp-bell" onclick="toggleNotifDropdown()">
+                                🔔
+                            </div>
+                            
+                            <div class="mp-notif-dropdown" id="mp-notif-dropdown">
+                                <div class="mp-notif-header">Thông báo mới</div>
+                                <div class="mp-notif-item"><span>🎟️</span> <div><strong>Sắp chiếu: 'Minions: The Rise of Gru' (Phòng 2)</strong><br>2 phút trước</div></div>
+                                <div class="mp-notif-item"><span>📅</span> <div><strong>Lịch chiếu mới cần phê duyệt</strong><br>10 phút trước</div></div>
+                                <div class="mp-notif-item"><span>📦</span> <div><strong>Nhập kho F&B hoàn tất</strong><br>1 giờ trước</div></div>
+                                <button class="mp-notif-btn">Xem tất cả</button>
+                            </div>
+
+                            <div class="mp-profile" style="cursor: pointer; position: relative;" onclick="toggleUserDropdown()">
                                 <div class="mp-avatar">👨‍💼</div>
                                 <div class="mp-user-info">
-                                    <span class="mp-user-name">Nguyễn Văn A -</span>
+                                    <span class="mp-user-name">Nguyễn Văn A ▾</span>
                                     <span class="mp-user-role">Quản lý</span>
+                                </div>
+                                
+                                <div class="mp-user-dropdown" id="mp-user-dropdown">
+                                    <div class="mp-user-dropdown-header">Chào, Nguyễn Văn A</div>
+                                    <div class="mp-dropdown-item">👤 Hồ sơ cá nhân</div>
+                                    <div class="mp-dropdown-item">⚙️ Cài đặt tài khoản</div>
+                                    <div class="mp-dropdown-item">↩️ Hoạt động gần đây</div>
+                                    <div class="mp-dropdown-item">❓ Hỗ trợ</div>
+                                    <div class="mp-dropdown-item logout" onclick="confirmCgvLogoutAction()">→ Đăng xuất</div>
                                 </div>
                             </div>
                         </div>
@@ -652,7 +673,7 @@
                                         </td>
                                         <td>20:30</td><td><div class="mp-age-badges"><span class="mp-badge c18">C18</span><span class="mp-badge c13">C13</span><span class="mp-badge p">P</span></div></td>
                                         <td>Phim hành động</td><td><span class="mp-status inactive">inactive</span></td><td>12/06/2026</td>
-                                        <td><div class="mp-table-actions"><button class="mp-action-btn">👁️</button><button class="mp-action-btn">✏️</button><button class="mp-action-btn" onclick="openMpDeleteModal()">🗑️</button></div></td>
+                                        <td><div class="mp-table-actions"><button class="mp-action-btn">👁️</button><button class="mp-action-btn" onclick="openEditMovie()">✏️</button><button class="mp-action-btn" onclick="openMpDeleteModal()">🗑️</button></div></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1164,6 +1185,49 @@
             <button class="mp-btn-cancel" onclick="closeMpDeleteModal()">HỦY</button>
             <button class="mp-btn-confirm" onclick="closeMpDeleteModal(); alert('Đã xóa phim thành công!')">XÓA NGAY</button>
         </div>
+    </div>
+</div>
+<div class="mp-modal-overlay" id="mp-add-movie-modal">
+    <div class="mp-modal-box" style="width: 500px;">
+        <div class="mp-modal-close" onclick="closeAddMovie()">✕</div>
+        <div class="mp-modal-header">Thêm Phim Mới</div>
+        <div class="mp-form-group">
+            <label>Tên phim (VN/EN)</label>
+            <div style="display:flex; gap:10px;">
+                <input type="text" class="cgv-input-text" placeholder="Tiếng Việt">
+                <input type="text" class="cgv-input-text" placeholder="English">
+            </div>
+        </div>
+        <div class="mp-form-group"><label>Thời lượng (phút)</label><input type="text" class="cgv-input-text"></div>
+        <div class="mp-form-group"><label>Ảnh Poster</label><div class="mp-upload-zone">⬆️</div></div>
+        <div class="mp-form-group"><label>Ngày phát hành</label><input type="date" class="cgv-input-text"></div>
+        <div class="mp-form-group"><label>Trạng thái</label>
+            <input type="radio" name="status" checked> Hoạt động 
+            <input type="radio" name="status"> Không hoạt động
+        </div>
+        <button class="btn-cgv-submit" onclick="closeAddMovie()">Lưu</button>
+    </div>
+</div>
+<div class="mp-modal-overlay" id="mp-edit-movie-modal">
+    <div class="mp-modal-box" style="width: 500px;">
+        <div class="mp-modal-close" onclick="closeEditMovie()">✕</div>
+        <div class="mp-modal-header">Chỉnh sửa Phim: Thor: Tình yêu và Sấm sét</div>
+        <div class="mp-form-group">
+            <label>Tên phim (VN/EN)</label>
+            <div style="display:flex; gap:10px;">
+                <input type="text" class="cgv-input-text" value="Thor: Tình yêu và Sấm sét">
+                <input type="text" class="cgv-input-text" value="Thor: Love and Thunder">
+            </div>
+        </div>
+        <div class="mp-form-group"><label>Thời lượng (phút)</label><input type="text" class="cgv-input-text" value="120"></div>
+        <div class="mp-form-group"><label>Ảnh Poster</label><div class="mp-upload-zone" style="padding:10px;"><img src="https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/190x260/2e2b8cd282892c71872b9e67d2cb5039/t/h/thor_love_and_thunder_payoff_poster_1_.jpg" style="height:50px;"></div></div>
+        <div class="mp-form-group"><label>Ngày phát hành</label><input type="date" class="cgv-input-text" value="2026-06-12"></div>
+        <div class="mp-form-group"><label>Phân loại độ tuổi</label><select class="cgv-input-text"><option>C18</option></select></div>
+        <div class="mp-form-group"><label>Trạng thái</label>
+            <input type="radio" name="edit-status"> Hoạt động 
+            <input type="radio" name="edit-status" checked> Không hoạt động
+        </div>
+        <button class="btn-cgv-submit" onclick="closeEditMovie()">Lưu</button>
     </div>
 </div>
 <div class="cgv-modal-overlay" id="mp-create-promo-modal">

@@ -52,3 +52,74 @@ function closeMpDeleteModal() {
 
 function openCreatePromoModal() { document.getElementById('mp-create-promo-modal').classList.add('open'); }
     function closeCreatePromoModal() { document.getElementById('mp-create-promo-modal').classList.remove('open'); }
+
+    //---POP UP NOTIFICATION---
+function toggleNotifDropdown() {
+    const dropdown = document.getElementById('mp-notif-dropdown');
+    dropdown.classList.toggle('open');
+    
+    // Nếu mở lên thì xóa chấm đỏ (nếu bạn có thêm class chấm đỏ)
+    const bell = document.querySelector('.mp-bell');
+    bell.classList.remove('has-new'); 
+}
+
+    // --- ĐIỀU KHIỂN MENU TÀI KHOẢN (USER DROPDOWN) ---
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('mp-user-dropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('open');
+    }
+}
+
+// Đóng menu nếu click ra ngoài
+window.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('mp-user-dropdown');
+    const profile = document.querySelector('.mp-profile');
+    if (dropdown && !profile.contains(e.target)) {
+        dropdown.classList.remove('open');
+    }
+});
+// --- ĐIỀU KHIỂN POPUP THÊM PHIM ---
+function openAddMovie() { document.getElementById('mp-add-movie-modal').classList.add('open'); }
+function closeAddMovie() { document.getElementById('mp-add-movie-modal').classList.remove('open'); }
+
+// --- ĐIỀU KHIỂN DROPDOWN TÀI KHOẢN (CẢNH 3) ---
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('mp-user-dropdown');
+    dropdown.classList.toggle('open');
+}
+
+// Đóng popup khi bấm ra ngoài
+window.onclick = function(event) {
+    const userModal = document.getElementById('mp-user-dropdown');
+    if (userModal && !event.target.matches('.mp-profile') && !event.target.closest('.mp-profile')) {
+        userModal.classList.remove('open');
+    }
+}
+// --- ĐIỀU KHIỂN POPUP CHỈNH SỬA PHIM ---
+function openEditMovie() { 
+    document.getElementById('mp-edit-movie-modal').classList.add('open'); 
+}
+function closeEditMovie() { 
+    document.getElementById('mp-edit-movie-modal').classList.remove('open'); 
+}
+
+// --- LOGIC GỌI TỪ DÒNG PHIM (Cần sửa lại nút Edit trong HTML cũ) ---
+// Bạn nhớ thêm onclick="openEditMovie()" vào thẻ button icon cây bút trong bảng Phim nhé!
+function toggleNotifDropdown() {
+    const dropdown = document.getElementById('mp-notif-dropdown');
+    dropdown.classList.toggle('open');
+    
+    // Khi mở thông báo, ta xóa cái chấm đỏ (nếu bạn gắn class 'has-new')
+    const bell = document.querySelector('.mp-bell');
+    if(bell) bell.classList.remove('has-new');
+}
+
+// Thêm logic đóng dropdown khi click ra ngoài
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('mp-notif-dropdown');
+    const bell = document.querySelector('.mp-bell');
+    if (dropdown && !bell.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.classList.remove('open');
+    }
+});
