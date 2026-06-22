@@ -35,9 +35,7 @@ window.addEventListener('DOMContentLoaded', () => {
     renderFnbMenu();
 
     // Kích hoạt render dữ liệu Admin ngay khi load trang
-    if (typeof renderAdminBanList === 'function') {
-        renderAdminBanList(); renderAdminSysLog(); renderAdminFaq(); renderAdminWebhook(); renderAdminDbBackups();
-    }
+    
 });
 
 // --- CHUYỂN TAB CÁC TRANG ---

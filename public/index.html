@@ -460,15 +460,92 @@
                 <div class="admin-main-content">
                     <div id="admin-tab-overview" class="admin-tab-section active">
                         <h3 class="admin-section-title">BÁO CÁO KẾT QUẢ KINH DOANH TRONG NGÀY</h3>
+                        <p style="color: #666;">Chọn các chức năng bên menu trái để xem chi tiết.</p>
                     </div>
-                    <div id="admin-tab-ban" class="admin-tab-section" style="display: none;"><h3>ACCOUNT BAN/UNBAN</h3></div>
-                    <div id="admin-tab-permission" class="admin-tab-section" style="display: none;"><h3>PERMISSION MAPPING</h3></div>
-                    <div id="admin-tab-config" class="admin-tab-section" style="display: none;"><h3>SYSTEM CONFIG</h3></div>
-                    <div id="admin-tab-syslog" class="admin-tab-section" style="display: none;"><h3>SYSTEM LOG</h3></div>
-                    <div id="admin-tab-banner" class="admin-tab-section" style="display: none;"><h3>BANNER CONFIG</h3></div>
-                    <div id="admin-tab-faq" class="admin-tab-section" style="display: none;"><h3>FAQ MANAGEMENT</h3></div>
-                    <div id="admin-tab-webhook" class="admin-tab-section" style="display: none;"><h3>WEBHOOK LOG</h3></div>
-                    <div id="admin-tab-db" class="admin-tab-section" style="display: none;"><h3>DATABASE BACKUP</h3></div>
+                    
+                    <div id="admin-tab-ban" class="admin-tab-section" style="display: none;">
+                        <h3 class="admin-section-title">ACCOUNT BAN/UNBAN</h3>
+                        <div class="admin-table-wrapper">
+                            <table class="admin-data-table">
+                                <thead><tr><th>ID</th><th>Email</th><th>Chức vụ</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
+                                <tbody id="admin-ban-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div id="admin-tab-permission" class="admin-tab-section" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ccc; margin-bottom: 25px; padding-bottom: 10px;">
+                            <h3 class="admin-section-title" style="border: none; margin: 0; padding: 0;">PERMISSION MAPPING</h3>
+                            <button class="btn-cgv-submit" style="width: auto; margin: 0; padding: 8px 15px; font-size: 13px;">+ THÊM QUYỀN MỚI</button>
+                        </div>
+                        <div class="admin-table-wrapper">
+                            <table class="admin-data-table">
+                                <thead><tr><th>Vai trò (Role)</th><th>Phân hệ (Module)</th><th>Cấp độ truy cập</th><th>Hành động</th></tr></thead>
+                                <tbody id="admin-permission-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div id="admin-tab-config" class="admin-tab-section" style="display: none;">
+                        <h3 class="admin-section-title">CORE SYSTEM CONFIG</h3>
+                        <div class="admin-table-wrapper">
+                            <table class="admin-data-table">
+                                <thead><tr><th>Khóa cấu hình (Key)</th><th>Giá trị (Value)</th><th>Mô tả chức năng</th><th>Hành động</th></tr></thead>
+                                <tbody id="admin-config-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div id="admin-tab-banner" class="admin-tab-section" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ccc; margin-bottom: 25px; padding-bottom: 10px;">
+                            <h3 class="admin-section-title" style="border: none; margin: 0; padding: 0;">BANNER CONFIG</h3>
+                            <button class="btn-cgv-submit" style="width: auto; margin: 0; padding: 8px 15px; font-size: 13px;">+ UPLOAD BANNER</button>
+                        </div>
+                        <div class="admin-table-wrapper">
+                            <table class="admin-data-table">
+                                <thead><tr><th>Hình ảnh Demo</th><th>Tiêu đề Banner</th><th>Đường dẫn (Link)</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
+                                <tbody id="admin-banner-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="admin-tab-syslog" class="admin-tab-section" style="display: none;">
+                        <h3 class="admin-section-title">SYSTEM LOG VIEWER</h3>
+                        <div class="admin-table-wrapper">
+                            <table class="admin-data-table">
+                                <thead><tr><th>Thời gian</th><th>Hành động</th><th>Người dùng</th><th>Trạng thái</th></tr></thead>
+                                <tbody id="admin-syslog-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="admin-tab-faq" class="admin-tab-section" style="display: none;">
+                        <h3 class="admin-section-title">FAQ MANAGEMENT</h3>
+                        <div class="admin-table-wrapper">
+                            <table class="admin-data-table">
+                                <thead><tr><th>Câu hỏi</th><th>Trả lời</th><th>Hành động</th></tr></thead>
+                                <tbody id="admin-faq-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div id="admin-tab-webhook" class="admin-tab-section" style="display: none;">
+                        <h3 class="admin-section-title">WEBHOOK LOG</h3>
+                        <div class="admin-table-wrapper">
+                            <table class="admin-data-table">
+                                <thead><tr><th>Thời gian</th><th>Nguồn</th><th>Payload Dữ liệu</th><th>HTTP Status</th></tr></thead>
+                                <tbody id="admin-webhook-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div id="admin-tab-db" class="admin-tab-section" style="display: none;">
+                        <h3 class="admin-section-title">DATABASE BACKUP / RESTORE</h3>
+                        <div class="admin-table-wrapper">
+                            <table class="admin-data-table">
+                                <thead><tr><th>Mã bản sao lưu</th><th>Ngày giờ</th><th>Dung lượng</th><th>Hình thức</th><th>Thao tác</th></tr></thead>
+                                <tbody id="admin-db-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -12,6 +12,9 @@ function switchAdminTab(tabName) {
     if(tabName === 'faq') renderAdminFaq();
     if(tabName === 'webhook') renderAdminWebhook();
     if(tabName === 'db') renderAdminDbBackups();
+    if(tabName === 'permission') renderAdminPermission();
+    if(tabName === 'config') renderAdminConfig();
+    if(tabName === 'banner') renderAdminBanner();
 }
 
 function renderAdminBanList() {
@@ -68,4 +71,44 @@ function renderAdminDbBackups() {
         { ver: "LAS_DB_v1.0.1", date: "18/06/2026 15:30", size: "144.8 MB", type: "Thủ công" }
     ];
     tbody.innerHTML = backups.map(b => `<tr><td><b>${b.ver}</b></td><td>${b.date}</td><td>${b.size}</td><td>${b.type}</td><td><button class="btn-admin-action edit">Phục hồi (Restore)</button></td></tr>`).join('');
+}
+function renderAdminPermission() {
+    const tbody = document.getElementById('admin-permission-tbody');
+    if (!tbody) return;
+    const perms = [
+        { role: "Administrator", module: "Tất cả hệ thống", access: '<span style="color:red; font-weight:bold;">Toàn quyền (Full Access)</span>' },
+        { role: "Manager", module: "Dashboard, QL Phim, Lịch Chiếu", access: '<span style="color:blue; font-weight:bold;">Đọc / Ghi / Sửa (CRUD)</span>' },
+        { role: "Staff", module: "Quầy vé, F&B", access: '<span style="color:green; font-weight:bold;">Chỉ thao tác đơn (Execute)</span>' }
+    ];
+    tbody.innerHTML = perms.map(p => `<tr><td><b>${p.role}</b></td><td>${p.module}</td><td>${p.access}</td><td><button class="btn-admin-action edit">Sửa quyền</button></td></tr>`).join('');
+}
+
+function renderAdminConfig() {
+    const tbody = document.getElementById('admin-config-tbody');
+    if (!tbody) return;
+    const configs = [
+        { key: "MAINTENANCE_MODE", val: "FALSE", desc: "Bật/Tắt chế độ bảo trì toàn hệ thống" },
+        { key: "TICKET_HOLD_TIME", val: "300", desc: "Thời gian giữ ghế chờ thanh toán (giây)" },
+        { key: "MAX_TICKET_PER_USER", val: "8", desc: "Số vé tối đa một tài khoản được mua / 1 lần" }
+    ];
+    tbody.innerHTML = configs.map(c => `<tr><td style="font-family:monospace; color:#0066cc;"><b>${c.key}</b></td><td><b>${c.val}</b></td><td>${c.desc}</td><td><button class="btn-admin-action edit">Thay đổi</button></td></tr>`).join('');
+}
+
+function renderAdminBanner() {
+    const tbody = document.getElementById('admin-banner-tbody');
+    if (!tbody) return;
+    const banners = [
+        { img: "https://www.cgv.vn/media/banner/images/v/n/vnpay_cgv_1100x80.jpg", title: "Khuyến mãi VNPay", link: "/khuyen-mai/vnpay", status: "Active" },
+        { img: "https://www.cgv.vn/media/banner/images/7/9/79k_u23_cinema_banner_1_.jpg", title: "Cổ vũ U23 VN", link: "/khuyen-mai/u23", status: "Inactive" }
+    ];
+    tbody.innerHTML = banners.map(b => {
+        const badge = b.status === 'Active' ? '<span class="status-badge status-now">Đang chạy</span>' : '<span class="status-badge" style="background:#777;">Tạm dừng</span>';
+        return `<tr>
+            <td><img src="${b.img}" style="height: 40px; border-radius: 4px; border: 1px solid #ccc;"></td>
+            <td><b>${b.title}</b></td>
+            <td style="color:#0066cc; text-decoration:underline; cursor:pointer;">${b.link}</td>
+            <td>${badge}</td>
+            <td><button class="btn-admin-action edit">Sửa</button><button class="btn-admin-action delete">Xóa</button></td>
+        </tr>`;
+    }).join('');
 }
